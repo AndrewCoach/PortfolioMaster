@@ -17,6 +17,17 @@ namespace PortfolioMaster.Models
         public DbSet<Silver> Silvers { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<PeerToPeerLoan> PeerToPeerLoans { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new GoldConfiguration());
+            modelBuilder.ApplyConfiguration(new SilverConfiguration());
+            modelBuilder.ApplyConfiguration(new StockConfiguration());
+            modelBuilder.ApplyConfiguration(new PeerToPeerLoanConfiguration());
+            modelBuilder.ApplyConfiguration(new PortfolioConfiguration());
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
 
