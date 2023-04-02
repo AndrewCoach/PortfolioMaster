@@ -1,8 +1,9 @@
 ﻿namespace PortfolioMaster.Models
 {
+    using Microsoft.AspNetCore.Identity;
     using System.Collections.Generic;
 
-    public class User
+    public class User : IdentityUser
     {
         public int Id { get; set; }
         public string Username { get; set; }

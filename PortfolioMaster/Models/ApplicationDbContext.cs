@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PortfolioMaster.Models.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace PortfolioMaster.Models
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
