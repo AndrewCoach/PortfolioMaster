@@ -1,31 +1,122 @@
-﻿@model IEnumerable<PortfolioMaster.Models.Gold>
+﻿@model PortfolioMaster.Models.PreciousMetalsViewModel
 @{
-    ViewData["Title"] = "Gold Holdings";
-    var goldPrice = ViewBag.GoldPrice;
+    ViewData["Title"] = "Precious Metals";
 }
 
-<h2>Gold Holdings</h2>
+<h1>@ViewData["Title"]</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var gold in Model)
-        {
-            var totalGoldQuantity = gold.AssetHoldings.Sum(ah => ah.Quantity);
-            var totalGoldValue = totalGoldQuantity * goldPrice;
+<div class="container">
+    <table class="table">
+        <thead>
             <tr>
-                <td>@gold.Name</td>
-                <td>@totalGoldQuantity</td>
-                <td>@totalGoldValue.ToString("C")</td>
+                <th>Metal</th>
+                <th>Total Quantity</th>
+                <th>Total Purchase Price</th>
+                <th>Current Price</th>
+                <th>Total Value</th>
+                <th>P/L</th>
             </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Add Create, Edit, and Delete buttons -->
+        </thead>
+        <tbody>
+            @foreach (var goldHolding in Model.GoldHoldings)
+            {
+                <tr>
+                    <td>@goldHolding.Name</td>
+                    <td>@goldHolding.AssetHoldings.Sum(h => h.Quantity)</td>
+                    <td>@goldHolding.AssetHoldings.Sum(h => h.PurchasePrice * h.Quantity)</td>
+                    <td>@ViewBag.GoldPrice</td>
+                    <td>@(goldHolding.AssetHoldings.Sum(h => h.Quantity) * ViewBag.GoldPrice)</td>
+                    <td>@((goldHolding.AssetHoldings.Sum(h => h.Quantity) * ViewBag.GoldPrice) - goldHolding.AssetHoldings.Sum(h => h.PurchasePrice * h.Quantity))</td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Purchase Date</th>
+                                    <th>Quantity</th>
+                                    <th>Purchase Price</th>
+                                    <th>Value</th>
+                                    <th>P/L</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var asset in goldHolding.AssetHoldings)
+                                {
+                                    <tr>
+                                        <td>@asset.PurchaseDate</td>
+                                        <td>@asset.Quantity</td>
+                                        <td>@(asset.PurchasePrice * asset.Quantity)</td>
+                                        <td>@(asset.Quantity * ViewBag.GoldPrice)</td>
+                                        <td>@((asset.Quantity * ViewBag.GoldPrice) - (asset.PurchasePrice * asset.Quantity))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Metal</th>
+                <th>Total Quantity</th>
+                <th>Total Purchase Price</th>
+                <th>Current Price</th>
+                <th>Total Value</th>
+                <th>P/L</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var silverHolding in Model.SilverHoldings)
+            {
+                <tr>
+                    <td>@silverHolding.Name</td>
+                    <td>@silverHolding.AssetHoldings.Sum(h => h.Quantity)</td>
+                    <td>@silverHolding.AssetHoldings.Sum(h => h.PurchasePrice * h.Quantity)</td>
+                    <td>@ViewBag.SilverPrice</td>
+                    <td>@(silverHolding.AssetHoldings.Sum(h => h.Quantity) * ViewBag.SilverPrice)</td>
+                    <td>@((silverHolding.AssetHoldings.Sum(h => h.Quantity) * ViewBag.SilverPrice) - silverHolding.AssetHoldings.Sum(h => h.PurchasePrice * h.Quantity))</td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Purchase Date</th>
+                                    <th>Quantity</th>
+                                    <th>Purchase Price</th>
+                                    <th>Value</th>
+                                    <th>P/L</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var asset in silverHolding.AssetHoldings)
+                                {
+                                    <tr>
+                                        <td>@asset.PurchaseDate</td>
+                                        <td>@asset.Quantity</td>
+                                        <td>@(asset.PurchasePrice * asset.Quantity)</td>
+                                        <td>@(asset.Quantity * ViewBag.SilverPrice)</td>
+                                        <td>@((asset.Quantity * ViewBag.SilverPrice) - (asset.PurchasePrice * asset.Quantity))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!-- Add the footnote with gold and silver prices -->
+    <div>
+        <p>
+            <strong>Gold Price:</strong> @ViewBag.GoldPrice USD per ounce
+        </p>
+        <p>
+            <strong>Silver Price:</strong> @ViewBag.SilverPrice USD per ounce
+        </p>
+    </div>
+</div>
