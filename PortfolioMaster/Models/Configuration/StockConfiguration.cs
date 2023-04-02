@@ -2,11 +2,12 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PortfolioMaster.Models;
 
-public class StockConfiguration : IEntityTypeConfiguration<Stock>
+namespace PortfolioMaster.Models.Configuration
 {
-    public void Configure(EntityTypeBuilder<Stock> builder)
+    public class StockConfiguration : IEntityTypeConfiguration<Stock>
     {
-        builder.Property(s => s.PurchasePrice).HasColumnType("decimal(18, 4)");
-        builder.Property(s => s.Quantity).HasColumnType("decimal(18, 4)");
+        public void Configure(EntityTypeBuilder<Stock> builder)
+        {
+        }
     }
 }

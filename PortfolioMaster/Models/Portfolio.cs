@@ -1,7 +1,8 @@
-﻿namespace PortfolioMaster.Models
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+
+namespace PortfolioMaster.Models
+{
     public class Portfolio
     {
         public int Id { get; set; }
@@ -12,11 +13,8 @@
         public int UserId { get; set; }
         public User User { get; set; }
 
-        // Navigation properties for Asset holdings
-        public ICollection<Gold> Golds { get; set; }
-        public ICollection<Silver> Silvers { get; set; }
-        public ICollection<Stock> Stocks { get; set; }
-        public ICollection<PeerToPeerLoan> PeerToPeerLoans { get; set; }
+        // Navigation property for Asset Holdings
+        public ICollection<AssetHolding> AssetHoldings { get; set; }
     }
 
 }

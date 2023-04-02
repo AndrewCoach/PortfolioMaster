@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PortfolioMaster.Models;
-
-public class GoldConfiguration : IEntityTypeConfiguration<Gold>
+namespace PortfolioMaster.Models.Configuration
 {
-    public void Configure(EntityTypeBuilder<Gold> builder)
+    public class GoldConfiguration : IEntityTypeConfiguration<Gold>
     {
-        builder.Property(g => g.PurchasePrice).HasColumnType("decimal(18, 4)");
-        builder.Property(g => g.Quantity).HasColumnType("decimal(18, 4)");
+        public void Configure(EntityTypeBuilder<Gold> builder)
+        {
+        }
     }
 }
 

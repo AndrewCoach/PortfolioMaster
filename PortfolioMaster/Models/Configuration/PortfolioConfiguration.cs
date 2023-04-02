@@ -2,11 +2,14 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PortfolioMaster.Models;
 
-public class PortfolioConfiguration : IEntityTypeConfiguration<Portfolio>
+namespace PortfolioMaster.Models.Configuration
 {
-    public void Configure(EntityTypeBuilder<Portfolio> builder)
+    public class PortfolioConfiguration : IEntityTypeConfiguration<Portfolio>
     {
-        builder.Property(p => p.TotalValue).HasColumnType("decimal(18, 4)");
+        public void Configure(EntityTypeBuilder<Portfolio> builder)
+        {
+            builder.Property(p => p.TotalValue).HasColumnType("decimal(18, 4)");
+        }
     }
 }
 

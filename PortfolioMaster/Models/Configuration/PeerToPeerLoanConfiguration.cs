@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PortfolioMaster.Models;
 
-public class PeerToPeerLoanConfiguration : IEntityTypeConfiguration<PeerToPeerLoan>
+namespace PortfolioMaster.Models.Configuration
 {
-    public void Configure(EntityTypeBuilder<PeerToPeerLoan> builder)
+    public class PeerToPeerLoanConfiguration : IEntityTypeConfiguration<PeerToPeerLoan>
     {
-        builder.Property(p => p.PurchasePrice).HasColumnType("decimal(18, 4)");
-        builder.Property(p => p.Quantity).HasColumnType("decimal(18, 4)");
-        builder.Property(p => p.InterestRate).HasColumnType("decimal(18, 4)");
+        public void Configure(EntityTypeBuilder<PeerToPeerLoan> builder)
+        {
+            builder.Property(p => p.InterestRate).HasColumnType("decimal(18, 4)");
+        }
     }
 }
 

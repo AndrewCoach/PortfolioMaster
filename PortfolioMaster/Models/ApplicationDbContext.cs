@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PortfolioMaster.Models.Configuration;
 
 namespace PortfolioMaster.Models
 {
@@ -17,6 +18,7 @@ namespace PortfolioMaster.Models
         public DbSet<Silver> Silvers { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<PeerToPeerLoan> PeerToPeerLoans { get; set; }
+        public DbSet<AssetHolding> AssetHoldings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +27,7 @@ namespace PortfolioMaster.Models
             modelBuilder.ApplyConfiguration(new StockConfiguration());
             modelBuilder.ApplyConfiguration(new PeerToPeerLoanConfiguration());
             modelBuilder.ApplyConfiguration(new PortfolioConfiguration());
+            modelBuilder.ApplyConfiguration(new AssetHoldingConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

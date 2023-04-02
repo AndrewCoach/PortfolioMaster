@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PortfolioMaster.Models;
 
-public class SilverConfiguration : IEntityTypeConfiguration<Silver>
+namespace PortfolioMaster.Models.Configuration
 {
-    public void Configure(EntityTypeBuilder<Silver> builder)
+    public class SilverConfiguration : IEntityTypeConfiguration<Silver>
     {
-        builder.Property(s => s.PurchasePrice).HasColumnType("decimal(18, 4)");
-        builder.Property(s => s.Quantity).HasColumnType("decimal(18, 4)");
+        public void Configure(EntityTypeBuilder<Silver> builder)
+        {
+        }
     }
 }
 
