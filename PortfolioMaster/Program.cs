@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Hosting;
 using PortfolioMaster.Models;
 using PortfolioMaster.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using PortfolioMaster.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,8 +36,13 @@ builder.Services.AddAuthentication()
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// register email handler
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -90,13 +97,18 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseAuthentication();
 app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapRazorPages();
+});
+
 
 app.Run();
 

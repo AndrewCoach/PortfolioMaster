@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace PortfolioMaster.Controllers
 {
-    [Authorize]
     public class GoldController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PortfolioMaster.Models
 {
@@ -10,11 +10,11 @@ namespace PortfolioMaster.Models
         public decimal TotalValue { get; set; }
 
         // Foreign Key for User
-        public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
         public User User { get; set; }
 
         // Navigation property for Asset Holdings
         public ICollection<AssetHolding> AssetHoldings { get; set; }
     }
-
 }

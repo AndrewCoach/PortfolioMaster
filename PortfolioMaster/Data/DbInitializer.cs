@@ -13,19 +13,16 @@ namespace PortfolioMaster.Data
             using var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
 
-            // Check if any data exists, if so, return
             if (context.Users.Any() || context.Portfolios.Any() || context.Assets.Any() || context.AssetHoldings.Any())
             {
                 return;
             }
 
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            var signInManager = serviceProvider.GetRequiredService<SignInManager<User>>();
 
-            // Create users
             var user1 = new User
             {
-                UserName = "devuser",
+                UserName = "devuser@example.com",
                 Email = "devuser@example.com",
             };
 
@@ -35,22 +32,21 @@ namespace PortfolioMaster.Data
                 throw new InvalidOperationException("Unable to create user in Initialize method.");
             }
 
-            await signInManager.SignInAsync(user1, isPersistent: false);
+            await context.SaveChangesAsync();
 
-            // Create portfolios
-            var portfolio1 = new Portfolio { Name = "User1 Portfolio", User = user1 };
+            var createdUser = await context.Users.FirstOrDefaultAsync(u => u.Email == user1.Email);
+
+            var portfolio1 = new Portfolio { Name = "User1 Portfolio", UserId = createdUser.Id };
             context.Portfolios.Add(portfolio1);
 
-            // Create assets
-            var gold1 = new Gold { Name = "Gold1", User = user1 };
+            var gold1 = new Gold { Name = "Gold1", UserId = createdUser.Id };
             context.Golds.Add(gold1);
 
-            var silver1 = new Silver { Name = "Silver1", User = user1 };
+            var silver1 = new Silver { Name = "Silver1", UserId = createdUser.Id };
             context.Silvers.Add(silver1);
 
             await context.SaveChangesAsync();
 
-            // Create asset holdings
             var assetHolding1 = new AssetHolding
             {
                 PurchaseDate = DateTime.Now.AddMonths(-3),
@@ -73,6 +69,7 @@ namespace PortfolioMaster.Data
 
             await context.SaveChangesAsync();
         }
+
     }
 }
 
