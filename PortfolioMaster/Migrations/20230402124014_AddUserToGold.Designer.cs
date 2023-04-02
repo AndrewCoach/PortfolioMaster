@@ -12,8 +12,8 @@ using PortfolioMaster.Models;
 namespace PortfolioMaster.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230402103038_UpdateUserModel")]
-    partial class UpdateUserModel
+    [Migration("20230402124014_AddUserToGold")]
+    partial class AddUserToGold
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -320,16 +320,18 @@ namespace PortfolioMaster.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("PortfolioMaster.Models.Gold", b =>
                 {
                     b.HasBaseType("PortfolioMaster.Models.Asset");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasIndex("UserId");
 
                     b.HasDiscriminator().HasValue("Gold");
                 });
@@ -444,6 +446,17 @@ namespace PortfolioMaster.Migrations
                     b.HasOne("PortfolioMaster.Models.User", "User")
                         .WithMany("Portfolios")
                         .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PortfolioMaster.Models.Gold", b =>
+                {
+                    b.HasOne("PortfolioMaster.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

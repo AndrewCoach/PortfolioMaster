@@ -16,5 +16,4 @@ namespace PortfolioMaster.Models
         public int AssetId { get; set; }
         public Asset Asset { get; set; }
     }
-
 }

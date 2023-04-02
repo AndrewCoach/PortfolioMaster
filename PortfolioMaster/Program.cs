@@ -14,6 +14,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+// Add HttpClient in ConfigureServices
+builder.Services.AddHttpClient();
 
 builder.Services.AddAuthentication()
     .AddGoogle(options =>

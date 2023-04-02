@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PortfolioMaster.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentitySchema : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,7 @@ namespace PortfolioMaster.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -48,6 +49,24 @@ namespace PortfolioMaster.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Asset",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InterestRate = table.Column<decimal>(type: "decimal(18,4)", nullable: true),
+                    MaturityDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TickerSymbol = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Exchange = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Asset", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +175,56 @@ namespace PortfolioMaster.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Portfolios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalValue = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Portfolios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Portfolios_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AssetHoldings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    PurchasePrice = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    PortfolioId = table.Column<int>(type: "int", nullable: false),
+                    AssetId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssetHoldings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AssetHoldings_Asset_AssetId",
+                        column: x => x.AssetId,
+                        principalTable: "Asset",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AssetHoldings_Portfolios_PortfolioId",
+                        column: x => x.PortfolioId,
+                        principalTable: "Portfolios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,6 +263,21 @@ namespace PortfolioMaster.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetHoldings_AssetId",
+                table: "AssetHoldings",
+                column: "AssetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetHoldings_PortfolioId",
+                table: "AssetHoldings",
+                column: "PortfolioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Portfolios_UserId1",
+                table: "Portfolios",
+                column: "UserId1");
         }
 
         /// <inheritdoc />
@@ -215,7 +299,16 @@ namespace PortfolioMaster.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AssetHoldings");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Asset");
+
+            migrationBuilder.DropTable(
+                name: "Portfolios");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

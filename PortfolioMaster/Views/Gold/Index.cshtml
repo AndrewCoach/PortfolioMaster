@@ -1,0 +1,31 @@
+﻿@model IEnumerable<PortfolioMaster.Models.Gold>
+@{
+    ViewData["Title"] = "Gold Holdings";
+    var goldPrice = ViewBag.GoldPrice;
+}
+
+<h2>Gold Holdings</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var gold in Model)
+        {
+            var totalGoldQuantity = gold.AssetHoldings.Sum(ah => ah.Quantity);
+            var totalGoldValue = totalGoldQuantity * goldPrice;
+            <tr>
+                <td>@gold.Name</td>
+                <td>@totalGoldQuantity</td>
+                <td>@totalGoldValue.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Add Create, Edit, and Delete buttons -->
