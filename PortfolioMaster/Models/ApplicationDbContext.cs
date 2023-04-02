@@ -9,7 +9,11 @@ namespace PortfolioMaster.Models
         {
         }
 
-        // Add DbSet properties for your entities here
+        public DbSet<Gold> Golds { get; set; }
+        public DbSet<Silver> Silvers { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<PeerToPeerLoan> PeerToPeerLoans { get; set; }
     }
 }
+
 
