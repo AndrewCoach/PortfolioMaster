@@ -15,6 +15,8 @@ namespace PortfolioMaster.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Portfolio> Portfolios { get; set; }
 
+        public DbSet<Asset> Assets { get; set; }
+
         public DbSet<Gold> Golds { get; set; }
         public DbSet<Silver> Silvers { get; set; }
         public DbSet<Stock> Stocks { get; set; }

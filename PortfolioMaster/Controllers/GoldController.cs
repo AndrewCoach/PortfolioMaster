@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace PortfolioMaster.Controllers
 {
+    [Authorize]
     public class GoldController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,7 +36,8 @@ namespace PortfolioMaster.Controllers
 
             if (GlobalData.GoldPriceLastFetched < DateTime.UtcNow.AddHours(-24))
             {
-                var goldPrice = await GetLatestGoldPriceAsync();
+                //var goldPrice = await GetLatestGoldPriceAsync();
+                var goldPrice = (decimal)0.0002;
                 if (goldPrice > 0)
                 {
                     GlobalData.GoldPrice = goldPrice;
@@ -52,7 +55,7 @@ namespace PortfolioMaster.Controllers
         }
 
         private async Task<decimal> GetLatestGoldPriceAsync()
-        {
+        { 
             var apiKey = _configuration["GoldApi:ApiKey"];
             var url = $"https://metals-api.com/api/latest?access_key={apiKey}&base=USD&symbols=XAU";
 
