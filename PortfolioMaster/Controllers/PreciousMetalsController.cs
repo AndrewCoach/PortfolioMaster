@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using PortfolioMaster.Helpers;
 using PortfolioMaster.Models;
+using PortfolioMaster.Services;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -13,42 +14,40 @@ using System.Threading.Tasks;
 
 namespace PortfolioMaster.Controllers
 {
-    public class GoldController : Controller
+    public class PreciousMetalsController : Controller
     {
         private readonly IMemoryCache _cache;
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly UserManager<User> _userManager;
+        private readonly PreciousMetalsService _preciousMetalsService;
 
-        public GoldController(
-            IMemoryCache cache, 
+        public PreciousMetalsController(
+            IMemoryCache cache,
             ApplicationDbContext context,
-            IConfiguration configuration, 
-            IHttpClientFactory httpClientFactory, 
-            UserManager<User> userManager)
+            IConfiguration configuration,
+            IHttpClientFactory httpClientFactory,
+            UserManager<User> userManager,
+            PreciousMetalsService preciousMetalsService)
         {
             _cache = cache;
             _context = context;
             _configuration = configuration;
             _httpClientFactory = httpClientFactory;
             _userManager = userManager;
+            _preciousMetalsService = preciousMetalsService;
         }
+
 
         // GET: Gold
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
 
-            var goldHoldings = await _context.Golds
-                .Where(h => h.User.Id == userId)
-                .Include(h => h.AssetHoldings)
-                .ToListAsync();
+            var goldHoldings = await _preciousMetalsService.GetUserGoldHoldingsAsync(userId);
 
-            var silverHoldings = await _context.Silvers
-                .Where(h => h.User.Id == userId)
-                .Include(h => h.AssetHoldings)
-                .ToListAsync();
+            var silverHoldings = await _preciousMetalsService.GetUserSilverHoldingsAsync(userId);
 
             decimal goldPrice = await GetLatestGoldPriceAsync();
             decimal silverPrice = await GetLatestSilverPriceAsync();
@@ -72,8 +71,7 @@ namespace PortfolioMaster.Controllers
             if (ModelState.IsValid)
             {
                 gold.UserId = _userManager.GetUserId(User);
-                _context.Add(gold);
-                await _context.SaveChangesAsync();
+                await _preciousMetalsService.CreateGoldAsync(gold, gold.UserId);
                 return RedirectToAction(nameof(Index));
             }
             return View(gold);
@@ -86,15 +84,15 @@ namespace PortfolioMaster.Controllers
                 return NotFound();
             }
 
-            var gold = await _context.Golds
-                .Include(g => g.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (gold == null)
+            var userId = _userManager.GetUserId(User);
+            var assetHolding = await _preciousMetalsService.GetAssetHoldingAsync(id.Value, userId);
+
+            if (assetHolding == null)
             {
                 return NotFound();
             }
 
-            return View(gold);
+            return View(assetHolding);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -104,44 +102,40 @@ namespace PortfolioMaster.Controllers
                 return NotFound();
             }
 
-            var gold = await _context.Golds.FindAsync(id);
-            if (gold == null)
+            var userId = _userManager.GetUserId(User);
+            var assetHolding = await _preciousMetalsService.GetAssetHoldingAsync(id.Value, userId);
+
+            if (assetHolding == null)
             {
                 return NotFound();
             }
-            return View(gold);
+
+            return View(assetHolding);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId")] Gold gold)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId")] AssetHolding holding)
         {
-            if (id != gold.Id)
+            if (id != holding.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+                var userId = _userManager.GetUserId(User);
+                bool updated = await _preciousMetalsService.UpdateAssetHoldingAsync(holding, userId);
+
+                if (!updated)
                 {
-                    _context.Update(gold);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GoldExists(gold.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(gold);
+
+            return View(holding);
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -151,30 +145,30 @@ namespace PortfolioMaster.Controllers
                 return NotFound();
             }
 
-            var gold = await _context.Golds
-                .Include(g => g.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (gold == null)
+            var userId = _userManager.GetUserId(User);
+            var assetHolding = await _preciousMetalsService.GetAssetHoldingAsync(id.Value, userId);
+
+            if (assetHolding == null)
             {
                 return NotFound();
             }
 
-            return View(gold);
+            return View(assetHolding);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var gold = await _context.Golds.FindAsync(id);
-            _context.Golds.Remove(gold);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var userId = _userManager.GetUserId(User);
+            bool deleted = await _preciousMetalsService.DeleteAssetHoldingAsync(id, userId);
 
-        private bool GoldExists(int id)
-        {
-            return _context.Golds.Any(e => e.Id == id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         private async Task<decimal> GetLatestGoldPriceAsync()
@@ -224,7 +218,6 @@ namespace PortfolioMaster.Controllers
 
             return silverPrice;
         }
-
     }
 }
 
