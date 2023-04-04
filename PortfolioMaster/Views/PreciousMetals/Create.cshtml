@@ -11,23 +11,23 @@
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="AssetName" class="control-label"></label>
-        <input asp-for="AssetName" class="form-control" readonly="readonly" />
+        <input asp-for="AssetName" class="form-control" readonly="readonly" style="max-width: 300px;" />
     </div>
     <div class="form-group">
         <label asp-for="PortfolioId" class="control-label">Portfolio</label>
-        <select asp-for="PortfolioId" asp-items="ViewBag.PortfolioList" class="form-control"></select>
+        <select asp-for="PortfolioId" asp-items="ViewBag.PortfolioList" class="form-control" style="max-width: 300px;"></select>
     </div>
     <div class="form-group">
         <label asp-for="Quantity" class="control-label"></label>
-        <input asp-for="Quantity" class="form-control" />
+        <input asp-for="Quantity" class="form-control" style="max-width: 300px;" />
     </div>
     <div class="form-group">
         <label asp-for="PurchaseDate" class="control-label"></label>
-        <input asp-for="PurchaseDate" class="form-control" />
+        <input asp-for="PurchaseDate" class="form-control" style="max-width: 300px;" />
     </div>
     <div class="form-group">
         <label asp-for="PurchasePrice" class="control-label"></label>
-        <input asp-for="PurchasePrice" class="form-control" />
+        <input asp-for="PurchasePrice" class="form-control" style="max-width: 300px;" />
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
