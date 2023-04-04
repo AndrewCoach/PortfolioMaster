@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PortfolioMaster.Models.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PortfolioMaster.Models
 {
@@ -22,6 +23,7 @@ namespace PortfolioMaster.Models
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<PeerToPeerLoan> PeerToPeerLoans { get; set; }
         public DbSet<AssetHolding> AssetHoldings { get; set; }
+        public DbSet<PreciousMetalPrice> PreciousMetalPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,8 +33,13 @@ namespace PortfolioMaster.Models
             modelBuilder.ApplyConfiguration(new PeerToPeerLoanConfiguration());
             modelBuilder.ApplyConfiguration(new PortfolioConfiguration());
             modelBuilder.ApplyConfiguration(new AssetHoldingConfiguration());
+            modelBuilder.ApplyConfiguration(new PreciousMetalPriceConfiguration());
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PreciousMetalPrice>()
+                .Property(p => p.MetalType)
+                .HasConversion(new EnumToStringConverter<MetalType>());
         }
     }
 }

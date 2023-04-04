@@ -51,8 +51,8 @@ namespace PortfolioMaster.Controllers
             var goldHoldings = await _preciousMetalsService.GetUserGoldHoldingsAsync(userId);
             var silverHoldings = await _preciousMetalsService.GetUserSilverHoldingsAsync(userId);
 
-            decimal goldPrice = (decimal)0.0005; // await GetLatestGoldPriceAsync();
-            decimal silverPrice = (decimal)0.0005; // await GetLatestSilverPriceAsync();
+            decimal goldPrice = await _preciousMetalsService.GetMetalPriceAsync(MetalType.Gold);
+            decimal silverPrice = await _preciousMetalsService.GetMetalPriceAsync(MetalType.Silver);
             ViewBag.GoldPrice = goldPrice;
             ViewBag.SilverPrice = silverPrice;
 
@@ -218,54 +218,6 @@ namespace PortfolioMaster.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<decimal> GetLatestGoldPriceAsync()
-        {
-            if (!_cache.TryGetValue<decimal>("GoldPrice", out decimal goldPrice))
-            {
-                var apiKey = _configuration["GoldApi:ApiKey"];
-                var url = $"https://metals-api.com/api/latest?access_key={apiKey}&base=USD&symbols=XAU";
-
-                var httpClient = _httpClientFactory.CreateClient();
-                var response = await httpClient.GetAsync(url);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                    goldPrice = result.rates.XAU;
-
-                    // Cache the gold price with a 1-day absolute expiration
-                    _cache.Set("GoldPrice", goldPrice, TimeSpan.FromDays(1));
-                }
-            }
-
-            return goldPrice;
-        }
-
-        private async Task<decimal> GetLatestSilverPriceAsync()
-        {
-            if (!_cache.TryGetValue<decimal>("SilverPrice", out decimal silverPrice))
-            {
-                var apiKey = _configuration["GoldApi:ApiKey"];
-                var url = $"https://metals-api.com/api/latest?access_key={apiKey}&base=USD&symbols=XAG";
-
-                var httpClient = _httpClientFactory.CreateClient();
-                var response = await httpClient.GetAsync(url);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                    silverPrice = result.rates.XAG;
-
-                    // Cache the silver price with a 1-day absolute expiration
-                    _cache.Set("SilverPrice", silverPrice, TimeSpan.FromDays(1));
-                }
-            }
-
-            return silverPrice;
         }
     }
 }

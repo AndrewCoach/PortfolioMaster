@@ -7,6 +7,9 @@ using PortfolioMaster.Models;
 using PortfolioMaster.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PortfolioMaster.Services;
+using Hangfire;
+using PortfolioMaster.Workers;
+using Hangfire.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,7 +70,26 @@ else
     });
 }
 
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
+
+app.UseHangfireDashboard();
+RecurringJob.AddOrUpdate<PreciousMetalsPriceUpdater>(updater => updater.UpdatePrices(), Cron.Daily);
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -124,8 +124,6 @@ namespace PortfolioMaster.Services
             return true;
         }
 
-
-
         public async Task<bool> DeleteAssetHoldingAsync(int id, string userId)
         {
             var holding = await GetAssetHoldingAsync(id, userId);
@@ -204,6 +202,48 @@ namespace PortfolioMaster.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        #region Metal prices
+        public async Task CreateOrUpdateGoldPriceAsync(decimal goldPrice)
+        {
+            await CreateOrUpdateMetalPriceAsync(MetalType.Gold, goldPrice);
+        }
+
+        public async Task CreateOrUpdateSilverPriceAsync(decimal silverPrice)
+        {
+            await CreateOrUpdateMetalPriceAsync(MetalType.Silver, silverPrice);
+        }
+
+        public async Task<decimal> GetMetalPriceAsync(MetalType metalType)
+        {
+            var metalPrice = await _context.PreciousMetalPrices
+                .FirstOrDefaultAsync(m => m.MetalType == metalType);
+
+            return metalPrice?.Price ?? 0;
+        }
+
+        private async Task CreateOrUpdateMetalPriceAsync(MetalType metalType, decimal price)
+        {
+            var metalPrice = await _context.PreciousMetalPrices
+                .FirstOrDefaultAsync(m => m.MetalType == metalType);
+
+            if (metalPrice == null)
+            {
+                metalPrice = new PreciousMetalPrice
+                {
+                    MetalType = metalType,
+                    Price = price
+                };
+                _context.PreciousMetalPrices.Add(metalPrice);
+            }
+            else
+            {
+                metalPrice.Price = price;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+        #endregion
     }
 }
 
