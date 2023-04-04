@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using PortfolioMaster.Helpers;
 using PortfolioMaster.Models;
+using PortfolioMaster.Models.Dtos;
 using PortfolioMaster.Services;
 using System.Linq;
 using System.Net.Http;
@@ -39,7 +40,6 @@ namespace PortfolioMaster.Controllers
             _preciousMetalsService = preciousMetalsService;
         }
 
-
         // GET: Gold
         public async Task<IActionResult> Index()
         {
@@ -49,8 +49,8 @@ namespace PortfolioMaster.Controllers
 
             var silverHoldings = await _preciousMetalsService.GetUserSilverHoldingsAsync(userId);
 
-            decimal goldPrice = await GetLatestGoldPriceAsync();
-            decimal silverPrice = await GetLatestSilverPriceAsync();
+            decimal goldPrice = (decimal)0.0005;// await GetLatestGoldPriceAsync();
+            decimal silverPrice = (decimal)0.0005;// await GetLatestSilverPriceAsync();
 
             ViewBag.GoldPrice = goldPrice;
             ViewBag.SilverPrice = silverPrice;
@@ -115,7 +115,7 @@ namespace PortfolioMaster.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId")] AssetHolding holding)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PurchaseDate,Quantity,PurchasePrice")] UpdateAssetHoldingDto holding)
         {
             if (id != holding.Id)
             {
@@ -129,12 +129,14 @@ namespace PortfolioMaster.Controllers
 
                 if (!updated)
                 {
-                    return NotFound();
+                    ModelState.AddModelError(string.Empty, "An error occurred while updating the asset holding. Please try again.");
+                    return View(holding);
                 }
 
                 return RedirectToAction(nameof(Index));
             }
 
+            // If we reach this point, an error occurred, and we should redisplay the form with the validation errors.
             return View(holding);
         }
 

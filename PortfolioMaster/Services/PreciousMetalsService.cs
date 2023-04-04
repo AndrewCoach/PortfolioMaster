@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using PortfolioMaster.Controllers;
 using PortfolioMaster.Models;
+using PortfolioMaster.Models.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,16 +82,37 @@ namespace PortfolioMaster.Services
             return true;
         }
 
-        public async Task<bool> UpdateAssetHoldingAsync(AssetHolding holding, string userId)
+        public async Task<bool> UpdateAssetHoldingAsync(UpdateAssetHoldingDto holdingDto, string userId)
         {
+            var holding = await _context.AssetHoldings
+                 .Include(h => h.Asset) // Include the related Asset
+                 .Include(h => h.Portfolio)
+                 .SingleOrDefaultAsync(h => h.Id == holdingDto.Id);
+
             if (holding == null || holding.Asset.UserId != userId)
                 return false;
+
+            // Apply changes to the holding object
+            holding.Quantity = holdingDto.Quantity;
+            holding.PurchasePrice = holdingDto.PurchasePrice;
+            holding.PurchaseDate = holdingDto.PurchaseDate;
+            if (holdingDto.PortfolioId.HasValue)
+            {
+                holding.PortfolioId = holdingDto.PortfolioId.Value;
+            }
+            if (holdingDto.AssetId.HasValue)
+            {
+                holding.AssetId = holdingDto.AssetId.Value;
+            }
+            // ... apply other changes if necessary
 
             _context.Entry(holding).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return true;
         }
+
+
 
         public async Task<bool> DeleteAssetHoldingAsync(int id, string userId)
         {

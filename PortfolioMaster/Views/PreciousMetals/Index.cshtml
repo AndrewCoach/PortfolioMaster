@@ -53,8 +53,8 @@
                                         <td>@(asset.Quantity * ViewBag.GoldPrice)</td>
                                         <td>@((asset.Quantity * ViewBag.GoldPrice) - (asset.PurchasePrice * asset.Quantity))</td>
                                         <td>
-                                            <a asp-controller="Gold" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
-                                            <a asp-controller="Gold" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
+                                            <a asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
+                                            <a asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
                                         </td>
                                     </tr>
                                 }
@@ -110,8 +110,8 @@
                                         <td>@(asset.Quantity * ViewBag.SilverPrice)</td>
                                         <td>@((asset.Quantity * ViewBag.SilverPrice) - (asset.PurchasePrice * asset.Quantity))</td>
                                         <td>
-                                            <a asp-controller="Gold" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
-                                            <a asp-controller="Gold" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
+                                            <a asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
+                                            <a asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
                                         </td>
                                     </tr>
                                 }

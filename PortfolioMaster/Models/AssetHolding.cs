@@ -1,11 +1,16 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace PortfolioMaster.Models
 {
     public class AssetHolding
     {
         public int Id { get; set; }
+
         public DateTime PurchaseDate { get; set; }
+
         public decimal Quantity { get; set; }
+
         public decimal PurchasePrice { get; set; }
 
         // Foreign Key for Portfolio

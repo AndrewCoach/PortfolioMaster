@@ -39,6 +39,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // register email handler
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
+builder.Services.AddScoped<PreciousMetalsService>();
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
