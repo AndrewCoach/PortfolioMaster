@@ -1,30 +1,41 @@
-﻿@model PortfolioMaster.Models.Gold
+﻿@model PortfolioMaster.Models.Dtos.CreateAssetHoldingViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Asset Holding";
 }
 
-<h1>Create</h1>
+<h1>Create Asset Holding</h1>
 
-<h4>Gold</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    <input type="hidden" asp-for="AssetId" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="AssetName" class="control-label"></label>
+        <input asp-for="AssetName" class="form-control" readonly="readonly" />
     </div>
-</div>
+    <div class="form-group">
+        <label asp-for="PortfolioId" class="control-label">Portfolio</label>
+        <select asp-for="PortfolioId" asp-items="ViewBag.PortfolioList" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Quantity" class="control-label"></label>
+        <input asp-for="Quantity" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PurchaseDate" class="control-label"></label>
+        <input asp-for="PurchaseDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PurchasePrice" class="control-label"></label>
+        <input asp-for="PurchasePrice" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
 

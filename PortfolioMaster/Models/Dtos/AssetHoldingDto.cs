@@ -1,23 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PortfolioMaster.Models.Dtos
 {
-    public class AssetHoldingDto
+    public class CreateAssetHoldingViewModel
     {
-        public int Id { get; set; }
-        public int PortfolioId { get; set; }
         public int AssetId { get; set; }
-        // ... other fields
-        [Required(ErrorMessage = "Purchase date is required.")]
-        public DateTime PurchaseDate { get; set; }
 
-        [Required(ErrorMessage = "Quantity is required.")]
-        [Range(0.00001, double.MaxValue, ErrorMessage = "Quantity must be greater than 0.")]
+        [Display(Name = "Asset Name")]
+        public string AssetName { get; set; }
+
+        [Required]
+        [Display(Name = "Portfolio")]
+        public int PortfolioId { get; set; }
+
+        [Required]
+        [Display(Name = "Quantity")]
         public decimal Quantity { get; set; }
 
-        [Required(ErrorMessage = "Purchase price is required.")]
-        [Range(0.00001, double.MaxValue, ErrorMessage = "Purchase price must be greater than 0.")]
+        [Required]
+        [Display(Name = "Purchase Date")]
+        [DataType(DataType.Date)]
+        public DateTime PurchaseDate { get; set; }
+
+        [Required]
+        [Display(Name = "Purchase Price")]
         public decimal PurchasePrice { get; set; }
     }
-
 }

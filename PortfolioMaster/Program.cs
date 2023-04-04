@@ -40,7 +40,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 builder.Services.AddScoped<PreciousMetalsService>();
-
+builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 
 
 // Add services to the container.

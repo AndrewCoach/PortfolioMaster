@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -23,6 +24,7 @@ namespace PortfolioMaster.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly UserManager<User> _userManager;
         private readonly PreciousMetalsService _preciousMetalsService;
+        private readonly IPortfolioService _portfolioService;
 
         public PreciousMetalsController(
             IMemoryCache cache,
@@ -30,7 +32,8 @@ namespace PortfolioMaster.Controllers
             IConfiguration configuration,
             IHttpClientFactory httpClientFactory,
             UserManager<User> userManager,
-            PreciousMetalsService preciousMetalsService)
+            PreciousMetalsService preciousMetalsService,
+            IPortfolioService portfolioService)
         {
             _cache = cache;
             _context = context;
@@ -38,7 +41,8 @@ namespace PortfolioMaster.Controllers
             _httpClientFactory = httpClientFactory;
             _userManager = userManager;
             _preciousMetalsService = preciousMetalsService;
-        }
+            _portfolioService = portfolioService;
+    }
 
         public async Task<IActionResult> Index()
         {
@@ -77,25 +81,48 @@ namespace PortfolioMaster.Controllers
             return View(new PreciousMetalsViewModel { GoldHoldings = goldHoldingsVM, SilverHoldings = silverHoldingsVM });
         }
 
-
-
-        public IActionResult Create()
+        [HttpGet, ActionName("Create")]
+        public async Task<IActionResult> CreateAssetHolding(int assetId)
         {
-            return View();
+            var userId = _userManager.GetUserId(User);
+            var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
+            var asset = await _preciousMetalsService.GetAssetById(assetId);
+
+            var viewModel = new CreateAssetHoldingViewModel
+            {
+                AssetId = assetId,
+                AssetName = asset.Name,
+            };
+            ViewBag.PortfolioList = new SelectList(portfolios, "Id", "Name");
+
+            return View(viewModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,UserId")] Gold gold)
+        [HttpPost, ActionName("Create")]
+        public async Task<IActionResult> CreateAssetHolding(CreateAssetHoldingViewModel model)
         {
+            var userId = _userManager.GetUserId(User);
             if (ModelState.IsValid)
             {
-                gold.UserId = _userManager.GetUserId(User);
-                await _preciousMetalsService.CreateGoldAsync(gold, gold.UserId);
+                var assetHolding = new AssetHolding
+                {
+                    AssetId = model.AssetId,
+                    PortfolioId = model.PortfolioId,
+                    Quantity = model.Quantity,
+                    PurchaseDate = model.PurchaseDate,
+                    PurchasePrice = model.PurchasePrice
+                };
+
+                await _preciousMetalsService.AddAssetHoldingAsync(assetHolding);
                 return RedirectToAction(nameof(Index));
             }
-            return View(gold);
+
+            // If the ModelState is not valid, repopulate the portfolios dropdown and return to the view.
+            var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
+            ViewBag.PortfolioList = new SelectList(portfolios, "Id", "Name");
+            return View(model);
         }
+
 
         public async Task<IActionResult> Details(int? id)
         {

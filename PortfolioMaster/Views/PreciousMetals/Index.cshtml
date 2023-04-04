@@ -21,6 +21,7 @@
             <th>Current Price</th>
             <th>Total Value</th>
             <th>P/L</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -33,6 +34,10 @@
                 <td>@Html.DisplayFor(_ => goldPrice)</td>
                 <td>@Html.DisplayFor(_ => goldHolding.TotalValue)</td>
                 <td>@Html.DisplayFor(_ => goldHolding.ProfitLoss)</td>
+                <td>
+                        <a asp-action="Create" asp-route-assetId="@goldHolding.Asset.Id" class="btn btn-primary">Add</a>
+                </td>
+
             </tr>
             <tr>
                 <td colspan="6">
@@ -78,6 +83,7 @@
             <th>Current Price</th>
             <th>Total Value</th>
             <th>P/L</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -90,6 +96,9 @@
                     <td>@Html.DisplayFor(_ => silverPrice)</td>
                     <td>@Html.DisplayFor(_ => silverHolding.TotalValue)</td>
                     <td>@Html.DisplayFor(_ => silverHolding.ProfitLoss)</td>
+                    <td>
+                        <a asp-action="Create" asp-route-assetId="@silverHolding.Asset.Id" class="btn btn-primary">Add</a>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="6">

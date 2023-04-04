@@ -34,6 +34,17 @@ namespace PortfolioMaster.Services
             _httpClientFactory = httpClientFactory;
         }
 
+        public async Task AddAssetHoldingAsync(AssetHolding assetHolding)
+        {
+            _context.AssetHoldings.Add(assetHolding);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Asset> GetAssetById(int assetId)
+        {
+            return await _context.Assets.FirstOrDefaultAsync(a => a.Id == assetId);
+        }
+
         public async Task<List<Gold>> GetUserGoldHoldingsAsync(string userId)
         {
             return await _context.Golds
@@ -54,6 +65,7 @@ namespace PortfolioMaster.Services
         {
             return await _context.AssetHoldings
                 .Where(h => h.Asset.UserId == userId)
+                .Include(h => h.Asset)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
