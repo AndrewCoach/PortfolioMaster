@@ -40,23 +40,43 @@ namespace PortfolioMaster.Controllers
             _preciousMetalsService = preciousMetalsService;
         }
 
-        // GET: Gold
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
 
             var goldHoldings = await _preciousMetalsService.GetUserGoldHoldingsAsync(userId);
-
             var silverHoldings = await _preciousMetalsService.GetUserSilverHoldingsAsync(userId);
 
-            decimal goldPrice = (decimal)0.0005;// await GetLatestGoldPriceAsync();
-            decimal silverPrice = (decimal)0.0005;// await GetLatestSilverPriceAsync();
-
+            decimal goldPrice = (decimal)0.0005; // await GetLatestGoldPriceAsync();
+            decimal silverPrice = (decimal)0.0005; // await GetLatestSilverPriceAsync();
             ViewBag.GoldPrice = goldPrice;
             ViewBag.SilverPrice = silverPrice;
 
-            return View(new PreciousMetalsViewModel { GoldHoldings = goldHoldings, SilverHoldings = silverHoldings });
+            var goldHoldingsVM = goldHoldings.Select(g => new AssetViewModel
+            {
+                Asset = g,
+                AssetHoldings = g.AssetHoldings.Select(ah => new AssetHoldingViewModel
+                {
+                    AssetHolding = ah,
+                    CurrentPrice = goldPrice
+                }).ToList(),
+                CurrentPrice = goldPrice
+            });
+
+            var silverHoldingsVM = silverHoldings.Select(s => new AssetViewModel
+            {
+                Asset = s,
+                AssetHoldings = s.AssetHoldings.Select(ah => new AssetHoldingViewModel
+                {
+                    AssetHolding = ah,
+                    CurrentPrice = silverPrice
+                }).ToList(),
+                CurrentPrice = silverPrice
+            });
+
+            return View(new PreciousMetalsViewModel { GoldHoldings = goldHoldingsVM, SilverHoldings = silverHoldingsVM });
         }
+
 
 
         public IActionResult Create()

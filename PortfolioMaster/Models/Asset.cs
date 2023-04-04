@@ -15,5 +15,20 @@ namespace PortfolioMaster.Models
 
         // Navigation property for Asset Holdings
         public ICollection<AssetHolding> AssetHoldings { get; set; }
+
+        public decimal GetTotalPurchasePrice()
+        {
+            return AssetHoldings.Sum(h => h.PurchasePrice * h.Quantity);
+        }
+
+        public decimal GetTotalValue(decimal currentPrice)
+        {
+            return AssetHoldings.Sum(h => h.Quantity) * currentPrice;
+        }
+
+        public decimal GetProfitLoss(decimal currentPrice)
+        {
+            return GetTotalValue(currentPrice) - GetTotalPurchasePrice();
+        }
     }
 }
