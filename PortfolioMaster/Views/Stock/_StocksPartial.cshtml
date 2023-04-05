@@ -1,0 +1,43 @@
+﻿@model IEnumerable<PortfolioMaster.Models.Stock>
+
+<input type="text" id="stockSearch" placeholder="Search stocks by name" class="form-control" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Ticker Symbol</th>
+            <th scope="col">Exchange</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var stock in Model)
+        {
+            <tr class="stockRow">
+                <td class="stockName">@stock.Name</td>
+                <td>@stock.TickerSymbol</td>
+                <td>@stock.Exchange</td>
+                <td>
+                    <a asp-controller="Stock" asp-action="Edit" asp-route-id="@stock.Id" class="btn btn-primary">Edit</a>
+                    <a asp-controller="Stock" asp-action="Details" asp-route-id="@stock.Id" class="btn btn-info">Details</a>
+                    <a asp-controller="Stock" asp-action="Delete" asp-route-id="@stock.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $("#stockSearch").on("input", function () {
+            var searchValue = $(this).val().toLowerCase();
+            $(".stockRow").filter(function () {
+                $(this).toggle($(this).find(".stockName").text().toLowerCase().indexOf(searchValue) > -1);
+            });
+        });
+    });
+</script>
+
+
+

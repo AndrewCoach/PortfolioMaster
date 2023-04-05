@@ -1,4 +1,4 @@
-﻿@model PortfolioMaster.Models.AssetHolding
+﻿@model PortfolioMaster.Models.Dtos.UpdateAssetHoldingDto
 
 @{
     ViewData["Title"] = "Edit Asset Holding";
@@ -6,7 +6,7 @@
 
 <h1>Edit Asset Holding</h1>
 
-<form asp-action="Edit" method="post">
+<form asp-controller="AssetHolding" asp-action="Edit" method="post">
     <div class="form-group">
         <input type="hidden" asp-for="Id" />
     </div>
@@ -31,7 +31,6 @@
     </div>
 </form>
 
-
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="AssetHolding" asp-action="Index">Back to List</a>
 </div>

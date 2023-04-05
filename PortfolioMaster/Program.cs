@@ -43,6 +43,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 builder.Services.AddScoped<PreciousMetalsService>();
+builder.Services.AddScoped<AssetHoldingService>();
+builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<AssetService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 
 

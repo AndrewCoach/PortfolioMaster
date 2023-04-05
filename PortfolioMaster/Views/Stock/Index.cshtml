@@ -1,0 +1,18 @@
+﻿@model IEnumerable<PortfolioMaster.Models.Stock>
+
+<!-- Render the stocks partial view -->
+<div class="stocks-section">
+    @Html.Partial("_StocksPartial", Model)
+</div>
+
+<!-- Render the asset holdings partial view for a specific stock -->
+<div class="asset-holdings-section">
+    @* Pass the required asset holdings for the selected stock *@
+    @Html.Partial("_AssetHoldingsPartial", Model.FirstOrDefault().AssetHoldings)
+</div>
+
+<!-- Render the stock price graph partial view -->
+<div class="stock-price-graph-section">
+    @Html.Partial("_StockPriceGraphPartial")
+</div>
+

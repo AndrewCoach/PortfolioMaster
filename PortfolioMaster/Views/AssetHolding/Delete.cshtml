@@ -36,14 +36,15 @@
         </dd>
     </dl>
 
-    <form asp-action="Delete">
+    <form asp-controller="AssetHolding" asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <div class="form-group">
             <input type="submit" value="Delete" class="btn btn-danger" /> |
-            <a asp-action="Index">Back to List</a>
+            <a asp-controller="AssetHolding" asp-action="Index">Back to List</a>
         </div>
     </form>
 </div>
+
 
 
 

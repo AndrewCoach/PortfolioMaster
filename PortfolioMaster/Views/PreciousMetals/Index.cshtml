@@ -35,7 +35,7 @@
                 <td>@Html.DisplayFor(_ => goldHolding.TotalValue)</td>
                 <td>@Html.DisplayFor(_ => goldHolding.ProfitLoss)</td>
                 <td>
-                        <a asp-action="Create" asp-route-assetId="@goldHolding.Asset.Id" class="btn btn-primary">Add</a>
+                    <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@goldHolding.Asset.Id" class="btn btn-primary">Add</a>
                 </td>
 
             </tr>
@@ -62,8 +62,8 @@
                                         <td>@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
                                         <td>@Html.DisplayFor(_ => asset.ProfitLoss)</td>
                                     <td>
-                                        <a asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
-                                        <a asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
+                                        <a asp-controller="AssetHolding" asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
+                                        <a asp-controller="AssetHolding" asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
                                     </td>
                                 </tr>
                             }
@@ -97,7 +97,7 @@
                     <td>@Html.DisplayFor(_ => silverHolding.TotalValue)</td>
                     <td>@Html.DisplayFor(_ => silverHolding.ProfitLoss)</td>
                     <td>
-                        <a asp-action="Create" asp-route-assetId="@silverHolding.Asset.Id" class="btn btn-primary">Add</a>
+                        <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@silverHolding.Asset.Id" class="btn btn-primary">Add</a>
                     </td>
                 </tr>
                 <tr>
@@ -123,8 +123,8 @@
                                         <td>@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
                                         <td>@Html.DisplayFor(_ => asset.ProfitLoss)</td>
                                         <td>
-                                            <a asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
-                                            <a asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
+                                            <a asp-controller ="AssetHolding" asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
+                                            <a asp-controller="AssetHolding" asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
                                         </td>
                                     </tr>
                                 }
