@@ -16,9 +16,6 @@
     <td>@Html.DisplayFor(_ => Model.CurrentPrice)</td>
     <td>@Html.DisplayFor(_ => Model.TotalValue)</td>
     <td>@Html.DisplayFor(_ => Model.ProfitLoss)</td>
-    <td>
-        <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@Model.Asset.Id" class="btn btn-primary">Add</a>
-    </td>
 </tr>
 <tr>
     <td colspan="7">
@@ -71,9 +68,32 @@
     }
 </style>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function (event) {
+                if (!event.target.closest('.not-clickable')) {
+                    const targetId = this.dataset.bsTarget;
+                    const targetElement = document.querySelector(targetId);
+                    const isExpanded = this.dataset.expanded === 'true';
+                    this.dataset.expanded = !isExpanded;
+                    targetElement.classList.toggle('collapse');
 
-</style>
+                    const chevron = this.querySelector('.chevron-icon');
+                    chevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            });
+        });
 
+        const addButton = document.querySelectorAll('.not-clickable a');
+        addButton.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+        });
+    });
+</script>
 <script>
     function toggleRow(row) {
         const isExpanded = row.getAttribute('data-expanded') === 'true';

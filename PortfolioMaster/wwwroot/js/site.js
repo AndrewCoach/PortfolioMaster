@@ -2,10 +2,3 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-$(document).ready(function () {
-    $('.expandable-row').on('click', function () {
-        let detailsRow = $(this).next('.details-row');
-        detailsRow.toggleClass('d-none');
-    });
-});
-
