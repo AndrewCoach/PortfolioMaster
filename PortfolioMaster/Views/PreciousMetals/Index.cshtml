@@ -11,131 +11,30 @@
 <h1>@ViewData["Title"]</h1>
 
 <div class="container">
-
     <table class="table">
-    <thead>
-        <tr>
-            <th>Metal</th>
-            <th>Total Quantity</th>
-            <th>Total Purchase Price</th>
-            <th>Current Price</th>
-            <th>Total Value</th>
-            <th>P/L</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var goldHolding in Model.GoldHoldings)
-        {
+        <thead>
             <tr>
-                <td>@goldHolding.Asset.Name</td>
-                <td>@goldHolding.Asset.AssetHoldings.Sum(h => h.Quantity)</td>
-                <td>@Html.DisplayFor(_ => goldHolding.TotalPurchasePrice)</td>
-                <td>@Html.DisplayFor(_ => goldPrice)</td>
-                <td>@Html.DisplayFor(_ => goldHolding.TotalValue)</td>
-                <td>@Html.DisplayFor(_ => goldHolding.ProfitLoss)</td>
-                <td>
-                    <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@goldHolding.Asset.Id" class="btn btn-primary">Add</a>
-                </td>
+                <th>Metal</th>
+                <th>Total Quantity</th>
+                <th>Total Purchase Price</th>
+                <th>Current Price</th>
+                <th>Total Value</th>
+                <th>P/L</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var goldHolding in Model.GoldHoldings)
+            {
+                @await Html.PartialAsync("_PreciousMetalTable", goldHolding)
+            }
 
-            </tr>
-            <tr>
-                <td colspan="6">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Purchase Date</th>
-                                <th>Quantity</th>
-                                <th>Purchase Price</th>
-                                <th>Value</th>
-                                <th>P/L</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                @foreach (var asset in goldHolding.AssetHoldings)
-                            {
-                                <tr>
-                                    <td>@asset.PurchaseDate</td>
-                                    <td>@asset.Quantity</td>
-                                        <td>@Html.DisplayFor(_ => asset.PurchasePriceTimesQuantity)</td>
-                                        <td>@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
-                                        <td>@Html.DisplayFor(_ => asset.ProfitLoss)</td>
-                                    <td>
-                                        <a asp-controller="AssetHolding" asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
-                                        <a asp-controller="AssetHolding" asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Metal</th>
-            <th>Total Quantity</th>
-            <th>Total Purchase Price</th>
-            <th>Current Price</th>
-            <th>Total Value</th>
-            <th>P/L</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var silverHolding in Model.SilverHoldings)
-        {
-            <tr>
-                    <td>@silverHolding.Asset.Name</td>
-                    <td>@silverHolding.Asset.AssetHoldings.Sum(h => h.Quantity)</td>
-                    <td>@Html.DisplayFor(_ => silverHolding.TotalPurchasePrice)</td>
-                    <td>@Html.DisplayFor(_ => silverPrice)</td>
-                    <td>@Html.DisplayFor(_ => silverHolding.TotalValue)</td>
-                    <td>@Html.DisplayFor(_ => silverHolding.ProfitLoss)</td>
-                    <td>
-                        <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@silverHolding.Asset.Id" class="btn btn-primary">Add</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="6">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Purchase Date</th>
-                                    <th>Quantity</th>
-                                    <th>Purchase Price</th>
-                                    <th>Value</th>
-                                    <th>P/L</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var asset in silverHolding.AssetHoldings)
-                                {
-                                    <tr>
-                                        <td>@asset.PurchaseDate</td>
-                                        <td>@asset.Quantity</td>
-                                        <td>@Html.DisplayFor(_ => asset.PurchasePriceTimesQuantity)</td>
-                                        <td>@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
-                                        <td>@Html.DisplayFor(_ => asset.ProfitLoss)</td>
-                                        <td>
-                                            <a asp-controller ="AssetHolding" asp-controller="PreciousMetals" asp-action="Edit" asp-route-id="@asset.Id" class="@editButtonStyle">Edit</a>
-                                            <a asp-controller="AssetHolding" asp-controller="PreciousMetals" asp-action="Delete" asp-route-id="@asset.Id" class="@deleteButtonStyle">Delete</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+            @foreach (var silverHolding in Model.SilverHoldings)
+            {
+                @await Html.PartialAsync("_PreciousMetalTable", silverHolding)
             }
         </tbody>
     </table>
-
 
     <!-- Add the footnote with gold and silver prices -->
     <div>
@@ -147,3 +46,4 @@
         </p>
     </div>
 </div>
+

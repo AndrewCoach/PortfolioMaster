@@ -1,0 +1,82 @@
+﻿@model PortfolioMaster.Models.AssetViewModel
+@{
+    var editButtonStyle = "btn btn-sm btn-primary";
+    var deleteButtonStyle = "btn btn-sm btn-danger";
+}
+
+<tr class="clickable-row" data-bs-toggle="collapse" data-bs-target="#holding-@Model.Asset.Id" onclick="toggleRow(this)">
+    <td>
+        <div>
+            <i class="fas fa-chevron-down chevron-icon"></i>
+            @Model.Asset.Name
+        </div>
+    </td>
+    <td>@Model.Asset.AssetHoldings.Sum(h => h.Quantity)</td>
+    <td>@Html.DisplayFor(_ => Model.TotalPurchasePrice)</td>
+    <td>@Html.DisplayFor(_ => Model.CurrentPrice)</td>
+    <td>@Html.DisplayFor(_ => Model.TotalValue)</td>
+    <td>@Html.DisplayFor(_ => Model.ProfitLoss)</td>
+    <td>
+        <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@Model.Asset.Id" class="btn btn-primary">Add</a>
+    </td>
+</tr>
+<tr>
+    <td colspan="7">
+        <div id="holding-@Model.Asset.Id" class="collapse">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Purchase Date</th>
+                        <th>Quantity</th>
+                        <th>Purchase Price</th>
+                        <th>Value</th>
+                        <th>P/L</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var asset in Model.AssetHoldings)
+                    {
+                        <tr>
+                            <td>@asset.PurchaseDate</td>
+                            <td>@asset.Quantity</td>
+                            <td>@Html.DisplayFor(_ => asset.PurchasePriceTimesQuantity)</td>
+                            <td>@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
+                            <td>@Html.DisplayFor(_ => asset.ProfitLoss)</td>
+                            <td>
+                                <a asp-controller="AssetHolding" asp-action="Edit" asp-route-id="@asset.Id" class="btn btn-sm btn-primary">Edit</a>
+                                <a asp-controller="AssetHolding" asp-action="Delete" asp-route-id="@asset.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </td>
+</tr>
+
+<style>
+    .clickable-row td div {
+        display: flex;
+        align-items: center;
+    }
+
+    .clickable-row .chevron-icon {
+        margin-right: 10px;
+        transition: transform 0.3s;
+    }
+
+    .clickable-row[data-expanded="true"] .chevron-icon {
+        transform: rotate(180deg);
+    }
+</style>
+
+
+</style>
+
+<script>
+    function toggleRow(row) {
+        const isExpanded = row.getAttribute('data-expanded') === 'true';
+        row.setAttribute('data-expanded', !isExpanded);
+    }
+</script>
