@@ -77,6 +77,9 @@ namespace PortfolioMaster.Workers
                     var result = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
                     goldPrice = result.rates.XAU;
 
+                    // Convert the gold price to USD per ounce
+                    goldPrice = 1 / goldPrice;
+
                     // Cache the gold price with a 1-day absolute expiration
                     _cache.Set("GoldPrice", goldPrice, TimeSpan.FromDays(1));
                 }
@@ -100,6 +103,9 @@ namespace PortfolioMaster.Workers
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
                     silverPrice = result.rates.XAG;
+
+                    // Convert the gold price to USD per ounce
+                    silverPrice = 1 / silverPrice;
 
                     // Cache the silver price with a 1-day absolute expiration
                     _cache.Set("SilverPrice", silverPrice, TimeSpan.FromDays(1));

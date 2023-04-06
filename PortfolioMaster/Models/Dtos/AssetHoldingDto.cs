@@ -7,6 +7,11 @@ namespace PortfolioMaster.Models.Dtos
 {
     public class CreateAssetHoldingViewModel
     {
+        public CreateAssetHoldingViewModel()
+        {
+            PurchaseDate = DateTime.Now.Date;
+        }
+
         public int AssetId { get; set; }
 
         [Display(Name = "Asset Name")]
@@ -17,6 +22,7 @@ namespace PortfolioMaster.Models.Dtos
         public int PortfolioId { get; set; }
 
         [Required]
+        [Range(0.000001, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
         [Display(Name = "Quantity")]
         public decimal Quantity { get; set; }
 
@@ -26,6 +32,7 @@ namespace PortfolioMaster.Models.Dtos
         public DateTime PurchaseDate { get; set; }
 
         [Required]
+        [Range(0.000001, double.MaxValue, ErrorMessage = "Purchase price must be greater than zero.")]
         [Display(Name = "Purchase Price")]
         public decimal PurchasePrice { get; set; }
     }
