@@ -12,6 +12,7 @@
     decimal totalCurrentPrice = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Sum(hhh => hhh.CurrentPrice)));
     decimal totalValue = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.TotalValue));
     decimal totalPL = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Sum(hhh => hhh.ProfitLoss)));
+    decimal totalPercentage = totalPurchasePrice != 0 ? (totalPL / totalPurchasePrice) * 100 : 0;
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -26,6 +27,7 @@
                 <th>Current Price (USD)</th>
                 <th>Total Value (USD)</th>
                 <th style="color: @(totalPL < 0 ? "red" : "green")">P/L (USD)</th>
+                <th style="color: @(totalPL < 0 ? "red" : "green")">P/L (%)</th>
             </tr>
         </thead>
         <tbody>
@@ -47,6 +49,7 @@
                 <td>$@Html.DisplayFor(_ => totalCurrentPrice)</td>
                 <td>$@Html.DisplayFor(_ => totalValue)</td>
                 <td style="color: @(totalPL < 0 ? "red" : "green");">$@Html.DisplayFor(_ => totalPL)</td>
+                <td style="color: @(totalPercentage < 0 ? "red" : "green");">@totalPercentage.ToString("0.00")%</td>
             </tr>
         </tfoot>
     </table>

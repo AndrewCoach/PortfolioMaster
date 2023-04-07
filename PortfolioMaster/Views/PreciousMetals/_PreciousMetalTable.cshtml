@@ -4,7 +4,7 @@
     var editButtonStyle = "btn btn-sm btn-primary";
     var deleteButtonStyle = "btn btn-sm btn-danger";
     decimal totalPL = @Model.AssetHoldings.Sum(hh => hh.ProfitLoss);
-
+    decimal totalPercentage = @Model.TotalPurchasePrice != 0 ? (totalPL / @Model.TotalPurchasePrice) * 100 : 0;
 }
 
 <tr class="clickable-row" data-bs-toggle="collapse" data-bs-target="#holding-@Model.Asset.Id" onclick="toggleRow(this)">
@@ -19,6 +19,7 @@
     <td>$@Html.DisplayFor(_ => Model.CurrentPrice)</td>
     <td>$@Html.DisplayFor(_ => Model.TotalValue)</td>
     <td style="color: @(totalPL < 0 ? "red" : "green")">$@Html.DisplayFor(_ => Model.ProfitLoss)</td>
+    <td style="color: @(totalPercentage < 0 ? "red" : "green");">@totalPercentage.ToString("0.00")%</td>
 </tr>
 <tr>
     <td colspan="7">
