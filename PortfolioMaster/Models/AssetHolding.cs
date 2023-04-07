@@ -7,13 +7,15 @@ namespace PortfolioMaster.Models
     {
         public int Id { get; set; }
 
-        public DateTime PurchaseDate { get; set; }
+        public TransactionType TransactionType { get; set; }
+
+        public DateTime TransactionDate { get; set; }
 
         [Display(Name = "Quantity (Oz)")]
         public decimal Quantity { get; set; }
 
-        [Display(Name = "Purchase Price (USD)")]
-        public decimal PurchasePrice { get; set; }
+        [Display(Name = "Price (USD)")]
+        public decimal Price { get; set; }
 
         // Foreign Key for Portfolio
         public int PortfolioId { get; set; }
@@ -22,5 +24,11 @@ namespace PortfolioMaster.Models
         // Foreign Key for Asset
         public int AssetId { get; set; }
         public Asset Asset { get; set; }
+    }
+
+    public enum TransactionType
+    {
+        Purchase,
+        Sale,
     }
 }

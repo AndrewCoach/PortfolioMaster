@@ -21,12 +21,14 @@
         public AssetHolding AssetHolding { get; set; }
         public decimal CurrentPrice { get; set; }
 
-        public DateTime PurchaseDate => AssetHolding.PurchaseDate;
+        public TransactionType TransactionType => AssetHolding.TransactionType;
+
+        public DateTime TransactionDate => AssetHolding.TransactionDate;
 
         public decimal Quantity => AssetHolding.Quantity;
 
-        public decimal PurchasePrice => AssetHolding.PurchasePrice;
+        public decimal Price => AssetHolding.Price;
         public decimal QuantityTimesCurrentPrice => AssetHolding.Quantity * CurrentPrice;
-        public decimal ProfitLoss => AssetHolding.Quantity * CurrentPrice - AssetHolding.PurchasePrice;
+        public decimal ProfitLoss => AssetHolding.Quantity * CurrentPrice - AssetHolding.Price;
     }
 }

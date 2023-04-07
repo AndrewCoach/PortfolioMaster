@@ -5,6 +5,8 @@
     var deleteButtonStyle = "btn btn-sm btn-danger";
     decimal totalPL = @Model.AssetHoldings.Sum(hh => hh.ProfitLoss);
     decimal totalPercentage = @Model.TotalPurchasePrice != 0 ? (totalPL / @Model.TotalPurchasePrice) * 100 : 0;
+    decimal totalQuantity = @Model.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Quantity : -h.Quantity);
+    decimal totalCashflow = @Model.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Price : -h.Price);
 }
 
 <tr class="clickable-row" data-bs-toggle="collapse" data-bs-target="#holding-@Model.Asset.Id" onclick="toggleRow(this)">
@@ -14,8 +16,8 @@
             @Model.Asset.Name
         </div>
     </td>
-    <td>@Model.Asset.AssetHoldings.Sum(h => h.Quantity)</td>
-    <td>$@Html.DisplayFor(_ => Model.TotalPurchasePrice)</td>
+    <td>@Html.DisplayFor(_ => @totalQuantity)</td>
+    <td>$@Html.DisplayFor(_ => totalCashflow)</td>
     <td>$@Html.DisplayFor(_ => Model.CurrentPrice)</td>
     <td>$@Html.DisplayFor(_ => Model.TotalValue)</td>
     <td style="color: @(totalPL < 0 ? "red" : "green")">$@Html.DisplayFor(_ => Model.ProfitLoss)</td>
@@ -27,9 +29,10 @@
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Purchase Date</th>
+                        <th>Transaction Date</th>
+                        <th>Transaction</th>
                         <th>Quantity (Oz)</th>
-                        <th>Purchase Price (USD)</th>
+                        <th>Price (USD)</th>
                         <th>Value (USD)</th>
                         <th>P/L (USD)</th>
                         <th>Actions</th>
@@ -42,9 +45,10 @@
                     @foreach (var asset in Model.AssetHoldings)
                     {
                         <tr>
-                            <td>@asset.PurchaseDate</td>
+                            <td>@asset.TransactionDate</td>
+                            <td style="color: @(asset.TransactionType == TransactionType.Purchase ? "green" : "red")">@asset.TransactionType</td>
                             <td>@asset.Quantity</td>
-                            <td>$@Html.DisplayFor(_ => asset.PurchasePrice)</td>
+                            <td>$@Html.DisplayFor(_ => asset.Price)</td>
                             <td>$@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
                             <td>$@Html.DisplayFor(_ => asset.ProfitLoss)</td>
                             <td>
@@ -54,6 +58,7 @@
                         </tr>
                     }
                 </tbody>
+
             </table>
         </div>
     </td>

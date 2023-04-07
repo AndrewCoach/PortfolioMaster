@@ -50,21 +50,23 @@ namespace PortfolioMaster.Data
 
             var assetHolding1 = new AssetHolding
             {
-                PurchaseDate = DateTime.Now.AddMonths(-3),
+                TransactionDate = DateTime.Now.AddMonths(-3),
                 Quantity = 10,
-                PurchasePrice = 1200,
+                Price = 1200,
                 PortfolioId = portfolio1.Id,
-                AssetId = gold1.Id
+                AssetId = gold1.Id,
+                TransactionType = TransactionType.Purchase
             };
             context.AssetHoldings.Add(assetHolding1);
 
             var assetHolding2 = new AssetHolding
             {
-                PurchaseDate = DateTime.Now.AddMonths(-1),
+                TransactionDate = DateTime.Now.AddMonths(-1),
                 Quantity = 20,
-                PurchasePrice = 22,
+                Price = 22,
                 PortfolioId = portfolio1.Id,
-                AssetId = silver1.Id
+                AssetId = silver1.Id,
+                TransactionType = TransactionType.Purchase
             };
             context.AssetHoldings.Add(assetHolding2);
 

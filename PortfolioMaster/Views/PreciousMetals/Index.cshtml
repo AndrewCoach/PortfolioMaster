@@ -7,11 +7,10 @@
     decimal goldPrice = ViewBag.GoldPrice;
     decimal silverPrice = ViewBag.SilverPrice;
 
-    decimal totalQuantity = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Sum(hhh => hhh.Quantity)));
-    decimal totalPurchasePrice = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.TotalPurchasePrice));
-    decimal totalCurrentPrice = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Sum(hhh => hhh.CurrentPrice)));
+    decimal totalQuantity = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Where(hhh => hhh.TransactionType == TransactionType.Purchase).Sum(hhh => hhh.Quantity) - hh.AssetHoldings.Where(hhh => hhh.TransactionType == TransactionType.Sale).Sum(hhh => hhh.Quantity)));
+    decimal totalPurchasePrice = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Sum(hhh => hhh.TransactionType == TransactionType.Purchase ? hhh.Price : -hhh.Price)));
     decimal totalValue = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.TotalValue));
-    decimal totalPL = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Sum(hhh => hhh.ProfitLoss)));
+    decimal totalPL = totalValue - totalPurchasePrice;
     decimal totalPercentage = totalPurchasePrice != 0 ? (totalPL / totalPurchasePrice) * 100 : 0;
 }
 
@@ -23,8 +22,8 @@
             <tr>
                 <th>Metal</th>
                 <th>Total Quantity (Oz)</th>
-                <th>Total Purchase Price (USD)</th>
-                <th>Current Price (USD)</th>
+                <th>Total Cashflow (USD)</th>
+                <th>Current Price per Oz (USD)</th>
                 <th>Total Value (USD)</th>
                 <th style="color: @(totalPL < 0 ? "red" : "green")">P/L (USD)</th>
                 <th style="color: @(totalPL < 0 ? "red" : "green")">P/L (%)</th>
@@ -46,7 +45,7 @@
                 </td>
                 <td>@Html.DisplayFor(_ => totalQuantity)</td>
                 <td>$@Html.DisplayFor(_ => totalPurchasePrice)</td>
-                <td>$@Html.DisplayFor(_ => totalCurrentPrice)</td>
+                <td>n/a</td>
                 <td>$@Html.DisplayFor(_ => totalValue)</td>
                 <td style="color: @(totalPL < 0 ? "red" : "green");">$@Html.DisplayFor(_ => totalPL)</td>
                 <td style="color: @(totalPercentage < 0 ? "red" : "green");">@totalPercentage.ToString("0.00")%</td>

@@ -24,13 +24,21 @@
         <span asp-validation-for="Quantity" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="PurchaseDate" class="control-label"></label>
-        <input asp-for="PurchaseDate" class="form-control" style="max-width: 300px;" />
+        <label asp-for="TransactionDate" class="control-label"></label>
+        <input asp-for="TransactionDate" class="form-control" style="max-width: 300px;" />
     </div>
     <div class="form-group">
-        <label asp-for="PurchasePrice" class="control-label"></label>
-        <input asp-for="PurchasePrice" class="form-control" style="max-width: 300px;" />
-        <span asp-validation-for="PurchasePrice" class="text-danger"></span>
+        <label asp-for="Price" class="control-label"></label>
+        <input asp-for="Price" class="form-control" style="max-width: 300px;" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TransactionType" class="control-label">Transaction Type</label>
+        <select asp-for="TransactionType" class="form-control" style="max-width: 300px;">
+            <option value="Purchase">Buy</option>
+            <option value="Sale">Sell</option>
+        </select>
+        <span asp-validation-for="TransactionType" class="text-danger"></span>
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
@@ -40,6 +48,7 @@
 <div>
     <a asp-controller="AssetHolding" asp-action="Index">Back to List</a>
 </div>
+
 
 
 

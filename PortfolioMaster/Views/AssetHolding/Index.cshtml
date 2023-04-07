@@ -5,7 +5,6 @@
     ViewData["Title"] = "Asset Holdings";
 }
 
-
 <h1>Asset Holdings</h1>
 
 <table id="assetHoldingsTable" class="table">
@@ -14,8 +13,6 @@
             <th>Asset Name</th>
             <th>Portfolio Name</th>
             <th>Quantity (Oz)</th>
-            <th>Purchase Date</th>
-            <th>Purchase Price (USD)</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -26,8 +23,6 @@
                 <td>@item.Asset.Name</td>
                 <td>@item.Portfolio.Name</td>
                 <td>@item.Quantity</td>
-                <td>@item.PurchaseDate.ToShortDateString()</td>
-                <td>@item.PurchasePrice</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
@@ -73,4 +68,3 @@
         });
     </script>
 }
-

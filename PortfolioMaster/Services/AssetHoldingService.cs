@@ -44,10 +44,11 @@ namespace PortfolioMaster.Services
         {
             var holding = new AssetHolding
             {
-                PurchaseDate = assetHolding.PurchaseDate,
+                TransactionType = assetHolding.TransactionType,
+                TransactionDate = assetHolding.TransactionDate,
                 AssetId = assetHolding.AssetId,
                 PortfolioId = assetHolding.PortfolioId,
-                PurchasePrice = assetHolding.PurchasePrice,
+                Price = assetHolding.Price,
                 Quantity = assetHolding.Quantity
             };
 
@@ -67,9 +68,10 @@ namespace PortfolioMaster.Services
                 return false;
 
             // Apply changes to the holding object
+            holding.TransactionType = holdingDto.TransactionType;
+            holding.TransactionDate = holdingDto.TransactionDate;
             holding.Quantity = holdingDto.Quantity;
-            holding.PurchasePrice = holdingDto.PurchasePrice;
-            holding.PurchaseDate = holdingDto.PurchaseDate;
+            holding.Price = holdingDto.Price;
             if (holdingDto.PortfolioId.HasValue)
             {
                 holding.PortfolioId = holdingDto.PortfolioId.Value;
@@ -98,7 +100,5 @@ namespace PortfolioMaster.Services
             await _context.SaveChangesAsync();
             return true;
         }
-
     }
 }
-

@@ -51,9 +51,19 @@ namespace PortfolioMaster.Controllers
             var assets = _assetService.GetAllAssetsForUser(userId);
             var assetSelectListItems = assets.Select(a => new SelectListItem(a.Name, a.Id.ToString())).ToList();
 
+            var groupedHoldings = assetHoldings
+                .GroupBy(ah => new { ah.Asset, ah.Portfolio })
+                .Select(g => new AssetHolding
+                {
+                    Asset = g.Key.Asset,
+                    Portfolio = g.Key.Portfolio,
+                    Quantity = g.Sum(ah => ah.TransactionType == TransactionType.Purchase ? ah.Quantity : -ah.Quantity)
+                })
+                .ToList();
+
             var viewModel = new AssetHoldingsViewModel
             {
-                AssetHoldings = assetHoldings,
+                AssetHoldings = groupedHoldings,
                 Assets = assetSelectListItems
             };
 
@@ -84,16 +94,17 @@ namespace PortfolioMaster.Controllers
             var userId = _userManager.GetUserId(User);
             if (ModelState.IsValid)
             {
-                var assetHolding = new AssetHolding
+                var transaction = new AssetHolding
                 {
                     AssetId = model.AssetId,
                     PortfolioId = model.PortfolioId,
                     Quantity = model.Quantity,
-                    PurchaseDate = model.PurchaseDate,
-                    PurchasePrice = model.PurchasePrice
+                    TransactionDate = model.TransactionDate,
+                    Price = model.Price,
+                    TransactionType = model.TransactionType
                 };
 
-                await _assetHoldingService.AddAssetHoldingAsync(assetHolding);
+                await _assetHoldingService.AddAssetHoldingAsync(transaction);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -111,29 +122,31 @@ namespace PortfolioMaster.Controllers
             }
 
             var userId = _userManager.GetUserId(User);
-            var assetHolding = await _assetHoldingService.GetHoldingByIdAsync(id.Value, userId);
+            var transaction = await _assetHoldingService.GetHoldingByIdAsync(id.Value, userId);
 
-            if (assetHolding == null)
+            if (transaction == null)
             {
                 return NotFound();
             }
 
             var dto = new UpdateAssetHoldingViewModel
             {
-                PurchaseDate = assetHolding.PurchaseDate,
-                AssetId = assetHolding.AssetId,
+                TransactionDate = transaction.TransactionDate,
+                AssetId = transaction.AssetId,
                 Id = id.Value,
-                PortfolioId = assetHolding.PortfolioId,
-                PurchasePrice = assetHolding.PurchasePrice,
-                Quantity = assetHolding.Quantity
+                PortfolioId = transaction.PortfolioId,
+                Price = transaction.Price,
+                Quantity = transaction.Quantity,
+                TransactionType = transaction.TransactionType
             };
 
             return View(dto);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PurchaseDate,Quantity,PurchasePrice")] UpdateAssetHoldingViewModel holding)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TransactionDate,TransactionType,Quantity,Price")] UpdateAssetHoldingViewModel holding)
         {
             if (id != holding.Id)
             {

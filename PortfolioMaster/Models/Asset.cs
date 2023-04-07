@@ -18,17 +18,25 @@ namespace PortfolioMaster.Models
 
         public decimal GetTotalPurchasePrice()
         {
-            return AssetHoldings.Sum(h => h.PurchasePrice);
+            return AssetHoldings.Where(h => h.TransactionType == TransactionType.Purchase).Sum(h => h.Price);
+        }
+
+        public decimal GetTotalSalePrice()
+        {
+            return AssetHoldings.Where(h => h.TransactionType == TransactionType.Sale).Sum(h => h.Price);
         }
 
         public decimal GetTotalValue(decimal currentPrice)
         {
-            return AssetHoldings.Sum(h => h.Quantity) * currentPrice;
+            decimal totalQuantity = AssetHoldings.Where(h => h.TransactionType == TransactionType.Purchase).Sum(h => h.Quantity) -
+                                     AssetHoldings.Where(h => h.TransactionType == TransactionType.Sale).Sum(h => h.Quantity);
+            return totalQuantity * currentPrice;
         }
 
         public decimal GetProfitLoss(decimal currentPrice)
         {
-            return GetTotalValue(currentPrice) - GetTotalPurchasePrice();
+            return GetTotalValue(currentPrice) - (GetTotalPurchasePrice() - GetTotalSalePrice());
         }
     }
+
 }

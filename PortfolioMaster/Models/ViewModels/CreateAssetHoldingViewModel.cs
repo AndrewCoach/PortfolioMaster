@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PortfolioMaster.Models.ViewModels
 {
@@ -9,7 +7,7 @@ namespace PortfolioMaster.Models.ViewModels
     {
         public CreateAssetHoldingViewModel()
         {
-            PurchaseDate = DateTime.Now.Date;
+            TransactionDate = DateTime.Now.Date;
         }
 
         public int AssetId { get; set; }
@@ -22,18 +20,22 @@ namespace PortfolioMaster.Models.ViewModels
         public int PortfolioId { get; set; }
 
         [Required]
+        [Display(Name = "Transaction Type")]
+        public TransactionType TransactionType { get; set; }
+
+        [Required]
         [Range(0.000001, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
         [Display(Name = "Quantity (Oz)")]
         public decimal Quantity { get; set; }
 
         [Required]
-        [Display(Name = "Purchase Date")]
+        [Display(Name = "Transaction Date")]
         [DataType(DataType.Date)]
-        public DateTime PurchaseDate { get; set; }
+        public DateTime TransactionDate { get; set; }
 
         [Required]
-        [Range(0.000001, double.MaxValue, ErrorMessage = "Purchase price must be greater than zero.")]
-        [Display(Name = "Purchase Price (USD)")]
-        public decimal PurchasePrice { get; set; }
+        [Range(0.000001, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
+        [Display(Name = "Price (USD)")]
+        public decimal Price { get; set; }
     }
 }
