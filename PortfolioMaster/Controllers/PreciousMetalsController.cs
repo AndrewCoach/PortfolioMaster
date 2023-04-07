@@ -1,17 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
+using PortfolioMaster.Contexts;
 using PortfolioMaster.Models;
-using PortfolioMaster.Models.Dtos;
+using PortfolioMaster.Models.ViewModels;
 using PortfolioMaster.Services;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace PortfolioMaster.Controllers
 {
@@ -47,38 +40,30 @@ namespace PortfolioMaster.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            var goldHoldings = await _preciousMetalsService.GetUserGoldHoldingsAsync(userId);
-            var silverHoldings = await _preciousMetalsService.GetUserSilverHoldingsAsync(userId);
-
+            var preciousMetalsHoldings = await _preciousMetalsService.GetUserPreciousMetalsHoldingsAsync(userId);
             decimal goldPrice = await _preciousMetalsService.GetMetalPriceAsync(MetalType.Gold);
             decimal silverPrice = await _preciousMetalsService.GetMetalPriceAsync(MetalType.Silver);
             ViewBag.GoldPrice = goldPrice;
             ViewBag.SilverPrice = silverPrice;
 
-            var goldHoldingsVM = goldHoldings.Select(g => new AssetViewModel
-            {
-                Asset = g,
-                AssetHoldings = g.AssetHoldings.Select(ah => new AssetHoldingViewModel
-                {
-                    AssetHolding = ah,
-                    CurrentPrice = goldPrice
-                }).ToList(),
-                CurrentPrice = goldPrice
-            });
+            var preciousMetalsHoldingsVM = preciousMetalsHoldings.Select(metalHoldings => metalHoldings.Select(m => {
+                var metalPrice = m.MetalType == MetalType.Gold ? goldPrice : silverPrice;
 
-            var silverHoldingsVM = silverHoldings.Select(s => new AssetViewModel
-            {
-                Asset = s,
-                AssetHoldings = s.AssetHoldings.Select(ah => new AssetHoldingViewModel
+                return new AssetViewModel
                 {
-                    AssetHolding = ah,
-                    CurrentPrice = silverPrice
-                }).ToList(),
-                CurrentPrice = silverPrice
-            });
+                    Asset = m,
+                    AssetHoldings = m.AssetHoldings.Select(ah => new AssetHoldingViewModel
+                    {
+                        AssetHolding = ah,
+                        CurrentPrice = metalPrice
+                    }).ToList(),
+                    CurrentPrice = metalPrice
+                };
+            }));
 
-            return View(new PreciousMetalsViewModel { GoldHoldings = goldHoldingsVM, SilverHoldings = silverHoldingsVM });
+            return View(new PreciousMetalsViewModel { PreciousMetalsHoldings = preciousMetalsHoldingsVM });
         }
+
     }
 }
 

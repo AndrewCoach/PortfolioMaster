@@ -1,17 +1,7 @@
-﻿using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
-using PortfolioMaster.Controllers;
+using PortfolioMaster.Contexts;
 using PortfolioMaster.Models;
-using PortfolioMaster.Models.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace PortfolioMaster.Services
 {
@@ -34,173 +24,47 @@ namespace PortfolioMaster.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task AddAssetHoldingAsync(AssetHolding assetHolding)
+        public async Task<List<List<PreciousMetal>>> GetUserPreciousMetalsHoldingsAsync(string userId)
         {
-            _context.AssetHoldings.Add(assetHolding);
-            await _context.SaveChangesAsync();
+            var groupedHoldings = new List<List<PreciousMetal>>();
+
+            var metalTypes = Enum.GetValues(typeof(MetalType)).Cast<MetalType>().ToList();
+
+            foreach (var metalType in metalTypes)
+            {
+                var metalHoldings = await _context.PreciousMetals
+                    .Where(h => h.UserId == userId && h.MetalType == metalType)
+                    .Include(h => h.AssetHoldings)
+                    .ToListAsync();
+
+                groupedHoldings.Add(metalHoldings);
+            }
+
+            return groupedHoldings;
         }
 
-        public async Task<Asset> GetAssetById(int assetId)
+        public async Task<List<PreciousMetal>> GetUserGoldHoldingsAsync(string userId)
         {
-            return await _context.Assets.FirstOrDefaultAsync(a => a.Id == assetId);
-        }
-
-        public async Task<List<Gold>> GetUserGoldHoldingsAsync(string userId)
-        {
-            return await _context.Golds
+            return await _context.PreciousMetals
                 .Where(h => h.UserId == userId)
+                .Where(h => h.UserId == userId && h.MetalType == MetalType.Gold)
                 .Include(h => h.AssetHoldings)
                 .ToListAsync();
         }
 
-        public async Task<List<Silver>> GetUserSilverHoldingsAsync(string userId)
+        public async Task<List<PreciousMetal>> GetUserSilverHoldingsAsync(string userId)
         {
-            return await _context.Silvers
-                .Where(h => h.UserId == userId)
+            return await _context.PreciousMetals
+                .Where(h => h.UserId == userId && h.MetalType == MetalType.Silver)
                 .Include(h => h.AssetHoldings)
                 .ToListAsync();
         }
 
-        public async Task<AssetHolding> GetAssetHoldingAsync(int id, string userId)
+        public async Task<PreciousMetal> GetPreciousMetalAsync(int id, string userId)
         {
-            return await _context.AssetHoldings
-                .Where(h => h.Asset.UserId == userId)
-                .Include(h => h.Asset)
-                .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
-        public async Task<Gold> GetGoldAsync(int id, string userId)
-        {
-            return await _context.Golds
+            return await _context.PreciousMetals
                 .Where(h => h.UserId == userId)
                 .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
-        public async Task<Silver> GetSilverAsync(int id, string userId)
-        {
-            return await _context.Silvers
-                .Where(h => h.UserId == userId)
-                .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
-        public async Task<bool> CreateAssetHoldingAsync(AssetHolding holding, string userId)
-        {
-            if (holding == null || holding.Asset.UserId != userId)
-                return false;
-
-            _context.AssetHoldings.Add(holding);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> UpdateAssetHoldingAsync(UpdateAssetHoldingDto holdingDto, string userId)
-        {
-            var holding = await _context.AssetHoldings
-                 .Include(h => h.Asset) // Include the related Asset
-                 .Include(h => h.Portfolio)
-                 .SingleOrDefaultAsync(h => h.Id == holdingDto.Id);
-
-            if (holding == null || holding.Asset.UserId != userId)
-                return false;
-
-            // Apply changes to the holding object
-            holding.Quantity = holdingDto.Quantity;
-            holding.PurchasePrice = holdingDto.PurchasePrice;
-            holding.PurchaseDate = holdingDto.PurchaseDate;
-            if (holdingDto.PortfolioId.HasValue)
-            {
-                holding.PortfolioId = holdingDto.PortfolioId.Value;
-            }
-            if (holdingDto.AssetId.HasValue)
-            {
-                holding.AssetId = holdingDto.AssetId.Value;
-            }
-            // ... apply other changes if necessary
-
-            _context.Entry(holding).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> DeleteAssetHoldingAsync(int id, string userId)
-        {
-            var holding = await GetAssetHoldingAsync(id, userId);
-            if (holding == null)
-                return false;
-
-            _context.AssetHoldings.Remove(holding);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> CreateGoldAsync(Gold gold, string userId)
-        {
-            if (gold == null || gold.UserId != userId)
-                return false;
-
-            _context.Golds.Add(gold);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> UpdateGoldAsync(Gold gold, string userId)
-        {
-            if (gold == null || gold.UserId != userId)
-                return false;
-
-            _context.Entry(gold).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> DeleteGoldAsync(int id, string userId)
-        {
-            var gold = await GetGoldAsync(id, userId);
-            if (gold == null)
-                return false;
-
-            _context.Golds.Remove(gold);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> CreateSilverAsync(Silver silver, string userId)
-        {
-            if (silver == null || silver.UserId != userId)
-                return false;
-
-            _context.Silvers.Add(silver);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> UpdateSilverAsync(Silver silver, string userId)
-        {
-            if (silver == null || silver.UserId != userId)
-                return false;
-
-            _context.Entry(silver).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> DeleteSilverAsync(int id, string userId)
-        {
-            var silver = await GetSilverAsync(id, userId);
-            if (silver == null)
-                return false;
-
-            _context.Silvers.Remove(silver);
-            await _context.SaveChangesAsync();
-            return true;
         }
 
         #region Metal prices

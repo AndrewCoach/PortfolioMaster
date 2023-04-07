@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PortfolioMaster.Contexts;
 using PortfolioMaster.Models;
-using PortfolioMaster.Models.Dtos;
+using PortfolioMaster.Models.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -33,6 +34,12 @@ namespace PortfolioMaster.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task AddAssetHoldingAsync(AssetHolding assetHolding)
+        {
+            _context.AssetHoldings.Add(assetHolding);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<CreateAssetHoldingViewModel> CreateHoldingAsync(CreateAssetHoldingViewModel assetHolding)
         {
             var holding = new AssetHolding
@@ -49,22 +56,32 @@ namespace PortfolioMaster.Services
             return assetHolding;
         }
 
-        public async Task<bool> UpdateHoldingAsync(UpdateAssetHoldingDto updatedHolding, string userId)
+        public async Task<bool> UpdateAssetHoldingAsync(UpdateAssetHoldingViewModel holdingDto, string userId)
         {
-            var existingHolding = await GetHoldingByIdAsync(updatedHolding.Id, userId);
+            var holding = await _context.AssetHoldings
+                 .Include(h => h.Asset) // Include the related Asset
+                 .Include(h => h.Portfolio)
+                 .SingleOrDefaultAsync(h => h.Id == holdingDto.Id);
 
-            if (existingHolding == null)
-            {
+            if (holding == null || holding.Asset.UserId != userId)
                 return false;
+
+            // Apply changes to the holding object
+            holding.Quantity = holdingDto.Quantity;
+            holding.PurchasePrice = holdingDto.PurchasePrice;
+            holding.PurchaseDate = holdingDto.PurchaseDate;
+            if (holdingDto.PortfolioId.HasValue)
+            {
+                holding.PortfolioId = holdingDto.PortfolioId.Value;
+            }
+            if (holdingDto.AssetId.HasValue)
+            {
+                holding.AssetId = holdingDto.AssetId.Value;
             }
 
-            existingHolding.PurchaseDate = updatedHolding.PurchaseDate;
-            existingHolding.Quantity = updatedHolding.Quantity;
-            existingHolding.PurchasePrice = updatedHolding.PurchasePrice;
-            if (updatedHolding.PortfolioId.HasValue)
-                existingHolding.PortfolioId = updatedHolding.PortfolioId.Value;
-
+            _context.Entry(holding).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
             return true;
         }
 

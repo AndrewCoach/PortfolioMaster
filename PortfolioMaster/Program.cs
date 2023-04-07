@@ -10,6 +10,7 @@ using PortfolioMaster.Services;
 using Hangfire;
 using PortfolioMaster.Workers;
 using Hangfire.SqlServer;
+using PortfolioMaster.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 

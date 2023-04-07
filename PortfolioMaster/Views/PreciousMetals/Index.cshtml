@@ -1,4 +1,5 @@
-﻿@model PortfolioMaster.Models.PreciousMetalsViewModel
+﻿@using PortfolioMaster.Models.ViewModels;
+@model PreciousMetalsViewModel
 @{
     ViewData["Title"] = "Precious Metals";
     var editButtonStyle = "btn btn-sm btn-primary";
@@ -18,19 +19,17 @@
                 <th>Total Quantity (Oz)</th>
                 <th>Total Purchase Price (USD)</th>
                 <th>Current Price (USD)</th>
-                <th>Total Value (USD/Oz)</th>
-                <th>P/L</th>
+                <th>Total Value (USD)</th>
+                <th>P/L (USD)</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var goldHolding in Model.GoldHoldings)
+            @foreach (var holdingList in Model.PreciousMetalsHoldings)
             {
-                @await Html.PartialAsync("_PreciousMetalTable", goldHolding)
-            }
-
-            @foreach (var silverHolding in Model.SilverHoldings)
-            {
-                @await Html.PartialAsync("_PreciousMetalTable", silverHolding)
+                @foreach (var goldHolding in holdingList)
+                {
+                    @await Html.PartialAsync("_PreciousMetalTable", goldHolding)
+                }
             }
         </tbody>
     </table>

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PortfolioMaster.Models;
+using PortfolioMaster.Models.ViewModels;
 using System.Diagnostics;
 
 namespace PortfolioMaster.Controllers

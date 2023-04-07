@@ -1,4 +1,5 @@
-﻿@model PortfolioMaster.Models.AssetViewModel
+﻿@using PortfolioMaster.Models.ViewModels;
+@model AssetViewModel
 @{
     var editButtonStyle = "btn btn-sm btn-primary";
     var deleteButtonStyle = "btn btn-sm btn-danger";
@@ -12,10 +13,10 @@
         </div>
     </td>
     <td>@Model.Asset.AssetHoldings.Sum(h => h.Quantity)</td>
-    <td>@Html.DisplayFor(_ => Model.TotalPurchasePrice)</td>
-    <td>@Html.DisplayFor(_ => Model.CurrentPrice)</td>
-    <td>@Html.DisplayFor(_ => Model.TotalValue)</td>
-    <td>@Html.DisplayFor(_ => Model.ProfitLoss)</td>
+    <td>$@Html.DisplayFor(_ => Model.TotalPurchasePrice)</td>
+    <td>$@Html.DisplayFor(_ => Model.CurrentPrice)</td>
+    <td>$@Html.DisplayFor(_ => Model.TotalValue)</td>
+    <td>$@Html.DisplayFor(_ => Model.ProfitLoss)</td>
 </tr>
 <tr>
     <td colspan="7">
@@ -27,7 +28,7 @@
                         <th>Quantity (Oz)</th>
                         <th>Purchase Price (USD)</th>
                         <th>Value (USD)</th>
-                        <th>P/L</th>
+                        <th>P/L (USD)</th>
                         <th>Actions</th>
                         <th class="text-end">
                             <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@Model.Asset.Id" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Add</a>
@@ -40,9 +41,9 @@
                         <tr>
                             <td>@asset.PurchaseDate</td>
                             <td>@asset.Quantity</td>
-                            <td>@Html.DisplayFor(_ => asset.PurchasePriceTimesQuantity)</td>
-                            <td>@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
-                            <td>@Html.DisplayFor(_ => asset.ProfitLoss)</td>
+                            <td>$@Html.DisplayFor(_ => asset.PurchasePriceTimesQuantity)</td>
+                            <td>$@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
+                            <td>$@Html.DisplayFor(_ => asset.ProfitLoss)</td>
                             <td>
                                 <a asp-controller="AssetHolding" asp-action="Edit" asp-route-id="@asset.Id" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
                                 <a asp-controller="AssetHolding" asp-action="Delete" asp-route-id="@asset.Id" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</a>

@@ -12,8 +12,8 @@ using PortfolioMaster.Contexts;
 namespace PortfolioMaster.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230402140415_UserChanges")]
-    partial class UserChanges
+    [Migration("20230407051943_RefactoredPreciousMetals")]
+    partial class RefactoredPreciousMetals
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -309,17 +309,38 @@ namespace PortfolioMaster.Migrations
                     b.Property<decimal>("TotalValue")
                         .HasColumnType("decimal(18, 4)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Portfolios");
+                });
+
+            modelBuilder.Entity("PortfolioMaster.Models.PreciousMetalPrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MetalType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 10)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PreciousMetalPrices");
                 });
 
             modelBuilder.Entity("PortfolioMaster.Models.User", b =>
@@ -327,13 +348,6 @@ namespace PortfolioMaster.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.HasDiscriminator().HasValue("User");
-                });
-
-            modelBuilder.Entity("PortfolioMaster.Models.Gold", b =>
-                {
-                    b.HasBaseType("PortfolioMaster.Models.Asset");
-
-                    b.HasDiscriminator().HasValue("Gold");
                 });
 
             modelBuilder.Entity("PortfolioMaster.Models.PeerToPeerLoan", b =>
@@ -349,16 +363,23 @@ namespace PortfolioMaster.Migrations
                     b.HasDiscriminator().HasValue("PeerToPeerLoan");
                 });
 
-            modelBuilder.Entity("PortfolioMaster.Models.Silver", b =>
+            modelBuilder.Entity("PortfolioMaster.Models.PreciousMetal", b =>
                 {
                     b.HasBaseType("PortfolioMaster.Models.Asset");
 
-                    b.HasDiscriminator().HasValue("Silver");
+                    b.Property<string>("MetalType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasDiscriminator().HasValue("PreciousMetal");
                 });
 
             modelBuilder.Entity("PortfolioMaster.Models.Stock", b =>
                 {
                     b.HasBaseType("PortfolioMaster.Models.Asset");
+
+                    b.Property<decimal>("CurrentMarketPrice")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<string>("Exchange")
                         .IsRequired()
@@ -456,7 +477,9 @@ namespace PortfolioMaster.Migrations
                 {
                     b.HasOne("PortfolioMaster.Models.User", "User")
                         .WithMany("Portfolios")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

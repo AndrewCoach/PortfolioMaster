@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
+using PortfolioMaster.Contexts;
 using PortfolioMaster.Models;
-using PortfolioMaster.Models.Dtos;
+using PortfolioMaster.Models.ViewModels;
 using PortfolioMaster.Services;
 
 namespace PortfolioMaster.Controllers
@@ -49,7 +50,7 @@ namespace PortfolioMaster.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
-            var asset = _assetService.GetAsset(assetId);
+            var asset = _assetService.GetAssetById(assetId);
 
             var viewModel = new CreateAssetHoldingViewModel
             {
@@ -115,7 +116,7 @@ namespace PortfolioMaster.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PurchaseDate,Quantity,PurchasePrice")] UpdateAssetHoldingDto holding)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PurchaseDate,Quantity,PurchasePrice")] UpdateAssetHoldingViewModel holding)
         {
             if (id != holding.Id)
             {
@@ -125,7 +126,7 @@ namespace PortfolioMaster.Controllers
             if (ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(User);
-                bool updated = await _holdingService.UpdateHoldingAsync(holding, userId);
+                bool updated = await _holdingService.UpdateAssetHoldingAsync(holding, userId);
 
                 if (!updated)
                 {

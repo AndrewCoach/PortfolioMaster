@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PortfolioMaster.Services;
 using PortfolioMaster.Models;
-using PortfolioMaster.Models.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
+using PortfolioMaster.Contexts;
+using PortfolioMaster.Models.ViewModels;
 
 namespace PortfolioMaster.Controllers
 {
@@ -18,6 +19,7 @@ namespace PortfolioMaster.Controllers
         private readonly UserManager<User> _userManager;
         private readonly PreciousMetalsService _preciousMetalsService;
         private readonly IPortfolioService _portfolioService;
+        private readonly AssetService _assetService;
 
         public AssetHoldingController(AssetHoldingService assetHoldingService,
             IMemoryCache cache,
@@ -26,7 +28,8 @@ namespace PortfolioMaster.Controllers
             IHttpClientFactory httpClientFactory,
             UserManager<User> userManager,
             PreciousMetalsService preciousMetalsService,
-            IPortfolioService portfolioService)
+            IPortfolioService portfolioService,
+            AssetService assetService)
         {
             _assetHoldingService = assetHoldingService;
             _cache = cache;
@@ -36,6 +39,7 @@ namespace PortfolioMaster.Controllers
             _userManager = userManager;
             _preciousMetalsService = preciousMetalsService;
             _portfolioService = portfolioService;
+            _assetService = assetService;
         }
 
         public async Task<IActionResult> Index()
@@ -50,7 +54,7 @@ namespace PortfolioMaster.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
-            var asset = await _preciousMetalsService.GetAssetById(assetId);
+            var asset = _assetService.GetAssetById(assetId);
 
             var viewModel = new CreateAssetHoldingViewModel
             {
@@ -77,7 +81,7 @@ namespace PortfolioMaster.Controllers
                     PurchasePrice = model.PurchasePrice
                 };
 
-                await _preciousMetalsService.AddAssetHoldingAsync(assetHolding);
+                await _assetHoldingService.AddAssetHoldingAsync(assetHolding);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -95,14 +99,14 @@ namespace PortfolioMaster.Controllers
             }
 
             var userId = _userManager.GetUserId(User);
-            var assetHolding = await _preciousMetalsService.GetAssetHoldingAsync(id.Value, userId);
+            var assetHolding = await _assetHoldingService.GetHoldingByIdAsync(id.Value, userId);
 
             if (assetHolding == null)
             {
                 return NotFound();
             }
 
-            var dto = new UpdateAssetHoldingDto
+            var dto = new UpdateAssetHoldingViewModel
             {
                 PurchaseDate = assetHolding.PurchaseDate,
                 AssetId = assetHolding.AssetId,
@@ -117,7 +121,7 @@ namespace PortfolioMaster.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PurchaseDate,Quantity,PurchasePrice")] UpdateAssetHoldingDto holding)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PurchaseDate,Quantity,PurchasePrice")] UpdateAssetHoldingViewModel holding)
         {
             if (id != holding.Id)
             {
@@ -127,7 +131,7 @@ namespace PortfolioMaster.Controllers
             if (ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(User);
-                bool updated = await _preciousMetalsService.UpdateAssetHoldingAsync(holding, userId);
+                bool updated = await _assetHoldingService.UpdateAssetHoldingAsync(holding, userId);
 
                 if (!updated)
                 {
@@ -150,7 +154,7 @@ namespace PortfolioMaster.Controllers
             }
 
             var userId = _userManager.GetUserId(User);
-            var assetHolding = await _preciousMetalsService.GetAssetHoldingAsync(id.Value, userId);
+            var assetHolding = await _assetHoldingService.GetHoldingByIdAsync(id.Value, userId);
 
             if (assetHolding == null)
             {
@@ -165,7 +169,7 @@ namespace PortfolioMaster.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var userId = _userManager.GetUserId(User);
-            bool deleted = await _preciousMetalsService.DeleteAssetHoldingAsync(id, userId);
+            bool deleted = await _assetHoldingService.DeleteHoldingAsync(id, userId);
 
             if (!deleted)
             {

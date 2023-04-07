@@ -9,8 +9,10 @@ namespace PortfolioMaster.Models
 
         public DateTime PurchaseDate { get; set; }
 
+        [Display(Name = "Quantity (Oz)")]
         public decimal Quantity { get; set; }
 
+        [Display(Name = "Purchase Price (USD)")]
         public decimal PurchasePrice { get; set; }
 
         // Foreign Key for Portfolio

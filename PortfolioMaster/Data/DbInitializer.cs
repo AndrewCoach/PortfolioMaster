@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PortfolioMaster.Contexts;
 using PortfolioMaster.Models;
 using System;
 using System.Linq;
@@ -39,11 +40,11 @@ namespace PortfolioMaster.Data
             var portfolio1 = new Portfolio { Name = "User1 Portfolio", UserId = createdUser.Id };
             context.Portfolios.Add(portfolio1);
 
-            var gold1 = new Gold { Name = "Gold1", UserId = createdUser.Id };
-            context.Golds.Add(gold1);
+            var gold1 = new PreciousMetal { Name = "Gold", UserId = createdUser.Id };
+            context.PreciousMetals.Add(gold1);
 
-            var silver1 = new Silver { Name = "Silver1", UserId = createdUser.Id };
-            context.Silvers.Add(silver1);
+            var silver1 = new PreciousMetal { Name = "Silver", UserId = createdUser.Id };
+            context.PreciousMetals.Add(silver1);
 
             await context.SaveChangesAsync();
 

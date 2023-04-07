@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PortfolioMaster.Models;
+using PortfolioMaster.Contexts;
 
 #nullable disable
 
@@ -347,13 +347,6 @@ namespace PortfolioMaster.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
-            modelBuilder.Entity("PortfolioMaster.Models.Gold", b =>
-                {
-                    b.HasBaseType("PortfolioMaster.Models.Asset");
-
-                    b.HasDiscriminator().HasValue("Gold");
-                });
-
             modelBuilder.Entity("PortfolioMaster.Models.PeerToPeerLoan", b =>
                 {
                     b.HasBaseType("PortfolioMaster.Models.Asset");
@@ -367,11 +360,15 @@ namespace PortfolioMaster.Migrations
                     b.HasDiscriminator().HasValue("PeerToPeerLoan");
                 });
 
-            modelBuilder.Entity("PortfolioMaster.Models.Silver", b =>
+            modelBuilder.Entity("PortfolioMaster.Models.PreciousMetal", b =>
                 {
                     b.HasBaseType("PortfolioMaster.Models.Asset");
 
-                    b.HasDiscriminator().HasValue("Silver");
+                    b.Property<string>("MetalType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasDiscriminator().HasValue("PreciousMetal");
                 });
 
             modelBuilder.Entity("PortfolioMaster.Models.Stock", b =>
@@ -379,7 +376,7 @@ namespace PortfolioMaster.Migrations
                     b.HasBaseType("PortfolioMaster.Models.Asset");
 
                     b.Property<decimal>("CurrentMarketPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<string>("Exchange")
                         .IsRequired()

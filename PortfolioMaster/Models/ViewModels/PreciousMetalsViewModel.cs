@@ -1,9 +1,8 @@
-﻿namespace PortfolioMaster.Models
+﻿namespace PortfolioMaster.Models.ViewModels
 {
     public class PreciousMetalsViewModel
     {
-        public IEnumerable<AssetViewModel> GoldHoldings { get; set; }
-        public IEnumerable<AssetViewModel> SilverHoldings { get; set; }
+        public IEnumerable<IEnumerable<AssetViewModel>> PreciousMetalsHoldings { get; set; }
     }
 
     public class AssetViewModel
@@ -30,6 +29,6 @@
 
         public decimal PurchasePriceTimesQuantity => AssetHolding.PurchasePrice * AssetHolding.Quantity;
         public decimal QuantityTimesCurrentPrice => AssetHolding.Quantity * CurrentPrice;
-        public decimal ProfitLoss => (AssetHolding.Quantity * CurrentPrice) - (AssetHolding.PurchasePrice * AssetHolding.Quantity);
+        public decimal ProfitLoss => AssetHolding.Quantity * CurrentPrice - AssetHolding.PurchasePrice * AssetHolding.Quantity;
     }
 }

@@ -3,6 +3,7 @@ using PortfolioMaster.Data;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using PortfolioMaster.Contexts;
 
 namespace PortfolioMaster.Services
 {
@@ -19,7 +20,7 @@ namespace PortfolioMaster.Services
             return _context.Assets.Where(a => a.UserId == userId).ToList();
         }
 
-        public Asset GetAsset(int id)
+        public Asset GetAssetById(int id)
         {
             return _context.Assets.FirstOrDefault(a => a.Id == id);
         }

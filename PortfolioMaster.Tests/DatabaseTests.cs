@@ -1,8 +1,8 @@
-﻿using PortfolioMaster.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Xunit;
+using PortfolioMaster.Contexts;
 
 namespace PortfolioMaster.Tests
 {

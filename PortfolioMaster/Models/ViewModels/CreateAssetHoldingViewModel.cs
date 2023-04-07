@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PortfolioMaster.Models.Dtos
+namespace PortfolioMaster.Models.ViewModels
 {
     public class CreateAssetHoldingViewModel
     {
@@ -23,7 +23,7 @@ namespace PortfolioMaster.Models.Dtos
 
         [Required]
         [Range(0.000001, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
-        [Display(Name = "Quantity")]
+        [Display(Name = "Quantity (Oz)")]
         public decimal Quantity { get; set; }
 
         [Required]
@@ -33,7 +33,7 @@ namespace PortfolioMaster.Models.Dtos
 
         [Required]
         [Range(0.000001, double.MaxValue, ErrorMessage = "Purchase price must be greater than zero.")]
-        [Display(Name = "Purchase Price")]
+        [Display(Name = "Purchase Price (USD)")]
         public decimal PurchasePrice { get; set; }
     }
 }
