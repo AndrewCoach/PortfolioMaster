@@ -7,9 +7,9 @@
     decimal goldPrice = ViewBag.GoldPrice;
     decimal silverPrice = ViewBag.SilverPrice;
 
-    decimal totalQuantity = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Where(hhh => hhh.TransactionType == TransactionType.Purchase).Sum(hhh => hhh.Quantity) - hh.AssetHoldings.Where(hhh => hhh.TransactionType == TransactionType.Sale).Sum(hhh => hhh.Quantity)));
-    decimal totalPurchasePrice = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.AssetHoldings.Sum(hhh => hhh.TransactionType == TransactionType.Purchase ? hhh.Price : -hhh.Price)));
-    decimal totalValue = @Model.PreciousMetalsHoldings.Sum(h => h.Sum(hh => hh.TotalValue));
+    decimal totalQuantity = Model.PreciousMetalsHoldings.Sum(group => group.Sum(h => h.AssetHoldings.Where(hh => hh.TransactionType == TransactionType.Purchase).Sum(hh => hh.Quantity) - h.AssetHoldings.Where(hh => hh.TransactionType == TransactionType.Sale).Sum(hh => hh.Quantity)));
+    decimal totalPurchasePrice = Model.PreciousMetalsHoldings.Sum(group => group.Sum(h => h.AssetHoldings.Sum(hh => hh.TransactionType == TransactionType.Purchase ? hh.Price : -hh.Price)));
+    decimal totalValue = Model.PreciousMetalsHoldings.Sum(group => group.Sum(h => h.TotalValue));
     decimal totalPL = totalValue - totalPurchasePrice;
     decimal totalPercentage = totalPurchasePrice != 0 ? (totalPL / totalPurchasePrice) * 100 : 0;
 }

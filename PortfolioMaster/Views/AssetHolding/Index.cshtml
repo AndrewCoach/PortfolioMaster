@@ -7,30 +7,49 @@
 
 <h1>Asset Holdings</h1>
 
-<table id="assetHoldingsTable" class="table">
-    <thead>
-        <tr>
-            <th>Asset Name</th>
-            <th>Portfolio Name</th>
-            <th>Quantity (Oz)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.AssetHoldings)
-        {
-            <tr>
-                <td>@item.Asset.Name</td>
-                <td>@item.Portfolio.Name</td>
-                <td>@item.Quantity</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<style>
+    .tab-content {
+        border: 1px solid #dee2e6;
+        border-top: none;
+        padding: 20px;
+    }
+    
+    .nav-tabs {
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .nav-tabs .nav-link {
+        color: #007bff;
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+    }
+    
+    .nav-tabs .nav-link:not(.active) {
+        color: #6c757d;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-bottom: none;
+    }
+</style>
+
+
+<ul class="nav nav-tabs" id="assetHoldingTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="assetHoldings-tab" data-bs-toggle="tab" href="#assetHoldings" role="tab" aria-controls="assetHoldings" aria-selected="false">All Holdings</a>
+    </li>
+</ul>
+<div class="tab-content mt-3" id="assetHoldingTabsContent">
+    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+        <partial name="_Overview" model="Model" />
+    </div>
+    <div class="tab-pane fade" id="assetHoldings" role="tabpanel" aria-labelledby="assetHoldings-tab">
+        <partial name="_AssetHoldings" model="Model" />
+    </div>
+</div>
+
 </br>
 <form asp-controller="AssetHolding" asp-action="Create" method="get" class="d-flex align-items-center">
     <div class="me-2">
@@ -56,14 +75,11 @@
                 "pageLength": 10,
             });
 
-            // Add event listener for asset selection
-            $('#assetId').on('change', function () {
-                var selectedAssetId = $(this).val();
-                if (selectedAssetId) {
-                    $('#addButton').removeAttr('disabled');
-                } else {
-                    $('#addButton').attr('disabled', 'disabled');
-                }
+            $('#allAssetHoldingsTable').DataTable({
+                "order": [[0, "asc"]],
+                "pageLength": 10,
+                "searching": true,
+                "lengthChange": true,
             });
         });
     </script>

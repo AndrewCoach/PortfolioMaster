@@ -1,0 +1,35 @@
+﻿@using PortfolioMaster.Models.ViewModels;
+@model AssetHoldingsViewModel
+
+</br>
+<table id="allAssetHoldingsTable" class="table">
+    <thead>
+        <tr>
+            <th>Asset Name</th>
+            <th>Portfolio Name</th>
+            <th>Quantity (Oz)</th>
+            <th>Transaction Type</th>
+            <th>Transaction Date</th>
+            <th>Purchase Price (USD)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.AssetHoldings)
+        {
+            <tr>
+                <td>@item.Asset.Name</td>
+                <td>@item.Portfolio.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.TransactionType</td>
+                <td>@item.TransactionDate.ToString("MM/dd/yyyy")</td>
+                <td>@item.Price.ToString("C2")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -63,13 +63,13 @@ namespace PortfolioMaster.Controllers
 
             var viewModel = new AssetHoldingsViewModel
             {
-                AssetHoldings = groupedHoldings,
+                GroupedAssetHoldings = groupedHoldings,
+                AssetHoldings = assetHoldings,
                 Assets = assetSelectListItems
             };
 
             return View(viewModel);
         }
-
 
         [HttpGet, ActionName("Create")]
         public async Task<IActionResult> CreateAssetHolding(int assetId)
