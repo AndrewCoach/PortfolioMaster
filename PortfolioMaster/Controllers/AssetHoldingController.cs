@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 using PortfolioMaster.Contexts;
 using PortfolioMaster.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace PortfolioMaster.Controllers
 {
@@ -45,9 +46,20 @@ namespace PortfolioMaster.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
+
             var assetHoldings = await _assetHoldingService.GetAllHoldingsForUserAsync(userId);
-            return View(assetHoldings);
+            var assets = _assetService.GetAllAssetsForUser(userId);
+            var assetSelectListItems = assets.Select(a => new SelectListItem(a.Name, a.Id.ToString())).ToList();
+
+            var viewModel = new AssetHoldingsViewModel
+            {
+                AssetHoldings = assetHoldings,
+                Assets = assetSelectListItems
+            };
+
+            return View(viewModel);
         }
+
 
         [HttpGet, ActionName("Create")]
         public async Task<IActionResult> CreateAssetHolding(int assetId)

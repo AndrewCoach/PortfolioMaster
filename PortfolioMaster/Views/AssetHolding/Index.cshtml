@@ -1,8 +1,10 @@
-﻿@model IEnumerable<PortfolioMaster.Models.AssetHolding>
+﻿@using PortfolioMaster.Models.ViewModels;
+@model AssetHoldingsViewModel
 
 @{
     ViewData["Title"] = "Asset Holdings";
 }
+
 
 <h1>Asset Holdings</h1>
 
@@ -18,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.AssetHoldings)
         {
             <tr>
                 <td>@item.Asset.Name</td>
@@ -32,9 +34,24 @@
                 </td>
             </tr>
         }
-@*        <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="5" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Add</a>*@
     </tbody>
 </table>
+</br>
+<form asp-controller="AssetHolding" asp-action="Create" method="get" class="d-flex align-items-center">
+    <div class="me-2">
+        <label for="assetId" class="form-label"><b>Add new Asset: </b></label>
+    </div>
+    <div class="me-2">
+        <select name="assetId" id="assetId" class="form-select" style="max-width: 300px;">
+            <option value="">-- Select Asset --</option>
+            @foreach (var asset in Model.Assets)
+            {
+                <option value="@asset.Value">@asset.Text</option>
+            }
+        </select>
+    </div>
+    <button type="submit" id="addButton" class="btn btn-success" disabled><i class="fas fa-plus"></i> Add</button>
+</form>
 
 @section Scripts {
     <script>
@@ -43,6 +60,17 @@
                 "order": [[0, "asc"]],
                 "pageLength": 10,
             });
+
+            // Add event listener for asset selection
+            $('#assetId').on('change', function () {
+                var selectedAssetId = $(this).val();
+                if (selectedAssetId) {
+                    $('#addButton').removeAttr('disabled');
+                } else {
+                    $('#addButton').attr('disabled', 'disabled');
+                }
+            });
         });
     </script>
 }
+
