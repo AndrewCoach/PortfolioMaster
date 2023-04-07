@@ -37,10 +37,10 @@
     <!-- Add the footnote with gold and silver prices -->
     <div>
         <p>
-            <strong>Gold Price:</strong> @ViewBag.GoldPrice USD per ounce
+            <strong>Gold Price per Oz:</strong> $@Html.DisplayFor(_ => goldPrice)
         </p>
         <p>
-            <strong>Silver Price:</strong> @ViewBag.SilverPrice USD per ounce
+            <strong>Silver Price per Oz:</strong> $@Html.DisplayFor(_ => silverPrice)
         </p>
     </div>
 </div>

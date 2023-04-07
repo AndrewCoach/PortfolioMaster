@@ -18,7 +18,7 @@ namespace PortfolioMaster.Models
 
         public decimal GetTotalPurchasePrice()
         {
-            return AssetHoldings.Sum(h => h.PurchasePrice * h.Quantity);
+            return AssetHoldings.Sum(h => h.PurchasePrice);
         }
 
         public decimal GetTotalValue(decimal currentPrice)

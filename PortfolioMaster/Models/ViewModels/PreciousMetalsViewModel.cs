@@ -26,9 +26,7 @@
         public decimal Quantity => AssetHolding.Quantity;
 
         public decimal PurchasePrice => AssetHolding.PurchasePrice;
-
-        public decimal PurchasePriceTimesQuantity => AssetHolding.PurchasePrice * AssetHolding.Quantity;
         public decimal QuantityTimesCurrentPrice => AssetHolding.Quantity * CurrentPrice;
-        public decimal ProfitLoss => AssetHolding.Quantity * CurrentPrice - AssetHolding.PurchasePrice * AssetHolding.Quantity;
+        public decimal ProfitLoss => AssetHolding.Quantity * CurrentPrice - AssetHolding.PurchasePrice;
     }
 }
