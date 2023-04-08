@@ -15,6 +15,6 @@ namespace PortfolioMaster.Models
         public User User { get; set; }
 
         // Navigation property for Asset Holdings
-        public ICollection<AssetHolding> AssetHoldings { get; set; }
+        public ICollection<AssetHolding> AssetHoldings { get; set; } = new List<AssetHolding>();
     }
 }

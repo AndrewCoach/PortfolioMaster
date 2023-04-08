@@ -69,6 +69,7 @@ namespace PortfolioMaster.Services
             }
             return totalValue;
         }
+
         public async Task<Portfolio> CreatePortfolioAsync(Portfolio portfolio)
         {
             _context.Portfolios.Add(portfolio);
@@ -77,11 +78,14 @@ namespace PortfolioMaster.Services
         }
 
         public async Task<Portfolio> GetPortfolioByIdAsync(int id, string userId)
-        {
-            return await _context.Portfolios.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
-        }
+            {
+                return await _context.Portfolios
+                    .Include(p => p.AssetHoldings) // Include the AssetHoldings
+                    .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+            }
 
-        public async Task UpdatePortfolioAsync(Portfolio portfolio)
+
+    public async Task UpdatePortfolioAsync(Portfolio portfolio)
         {
             _context.Portfolios.Update(portfolio);
             await _context.SaveChangesAsync();

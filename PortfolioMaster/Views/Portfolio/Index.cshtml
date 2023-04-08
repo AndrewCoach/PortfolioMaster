@@ -1,4 +1,4 @@
-﻿@model PortfolioMaster.Models.ViewModels.PortfoliosViewModel
+﻿@model PortfolioMaster.Models.ViewModels.PortfolioIndexViewModel
 
 @{
     ViewData["Title"] = "Portfolios";
@@ -29,6 +29,26 @@
     </tbody>
 </table>
 
+<div>
+    <label for="portfolioSelector">Select a portfolio:</label>
+    <select id="portfolioSelector" class="form-control">
+        @foreach (var portfolio in Model.Portfolios)
+        {
+            <option value="@portfolio.Id">@portfolio.Name</option>
+        }
+    </select>
+</div>
+
+@if (Model.Portfolios.Count > 0)
+{
+    await Html.RenderPartialAsync("_PortfolioGraphPartial", Model.Portfolios.FirstOrDefault(p => p.Id == Model.SelectedPortfolioId));
+}
+else
+{
+    <p>No portfolios found.</p>
+}
+
+
 <a asp-action="Create" class="btn btn-success">Add Portfolio</a>
 
 @section Scripts {
@@ -43,6 +63,43 @@
                 "searching": true,
                 "lengthChange": true,
             });
+        });
+    </script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        async function fetchPortfolioData(portfolioId) {
+            const response = await fetch(`@Url.Action("GetPortfolioData", "Portfolio")/${portfolioId}`);
+            const data = await response.json();
+            return data;
+        }
+
+        async function renderPortfolioGraph(portfolioId) {
+            const data = await fetchPortfolioData(portfolioId);
+
+            const trace = {
+                x: data.map(d => d.date),
+                y: data.map(d => d.value),
+                mode: 'lines',
+                line: { shape: 'linear' }
+            };
+
+            const layout = {
+                title: 'Portfolio Intrinsic Value over Time',
+                xaxis: { title: 'Date' },
+                yaxis: { title: 'Value (USD)' }
+            };
+
+            Plotly.newPlot('portfolioGraph', [trace], layout);
+        }
+
+        // Initial rendering of the graph
+        renderPortfolioGraph(@Model.SelectedPortfolioId);
+
+        // Update the graph when the portfolio is changed
+        document.getElementById('portfolioSelector').addEventListener
+                ('change', (event) => {
+            const selectedPortfolioId = event.target.value;
+            renderPortfolioGraph(selectedPortfolioId);
         });
     </script>
 }

@@ -9,6 +9,7 @@ using PortfolioMaster.Services;
 namespace PortfolioMaster.Controllers
 {
     [Authorize]
+    [Route("[controller]/[action]")]
     public class PortfolioController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -23,15 +24,42 @@ namespace PortfolioMaster.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
-
             var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
 
-            var viewModel = new PortfoliosViewModel
+            var viewModel = new PortfolioIndexViewModel
             {
-                Portfolios = portfolios
+                Portfolios = portfolios,
+                SelectedPortfolioId = portfolios.FirstOrDefault()?.Id ?? 0
             };
 
             return View(viewModel);
+        }
+
+        [HttpGet("{portfolioId}")]
+        public async Task<IActionResult> GetPortfolioData(int portfolioId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var portfolio = await _portfolioService.GetPortfolioByIdAsync(portfolioId, userId);
+
+            if (portfolio == null)
+            {
+                return NotFound();
+            }
+
+            var groupedData = portfolio.AssetHoldings
+                .GroupBy(ah => ah.TransactionDate.Date)
+                .OrderBy(g => g.Key);
+
+            var data = groupedData.Aggregate(new List<(DateTime date, decimal value)>(), (result, current) =>
+            {
+                decimal previousValue = result.LastOrDefault().value; // Get the value of the last element, or 0 if the list is empty
+                decimal currentValue = current.Sum(ah => ah.TransactionType == TransactionType.Purchase ? ah.Price : -ah.Price);
+                decimal cumulativeValue = previousValue + currentValue;
+                result.Add((current.Key, cumulativeValue));
+                return result;
+            });
+
+            return Json(data.Select(x => new { date = x.date, value = x.value }));
         }
 
 
