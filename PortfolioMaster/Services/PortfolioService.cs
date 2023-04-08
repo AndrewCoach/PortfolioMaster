@@ -80,14 +80,21 @@ namespace PortfolioMaster.Services
         }
 
         public async Task<Portfolio> GetPortfolioByIdAsync(int id, string userId)
-            {
-                return await _context.Portfolios
-                    .Include(p => p.AssetHoldings) // Include the AssetHoldings
-                    .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
-            }
+        {
+            return await _context.Portfolios
+                .Include(p => p.AssetHoldings)
+                .ThenInclude(ass => ass.Asset) // Include the AssetHoldings
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+        }
+        public async Task<List<AssetHolding>> GetAssetHoldingsByPortfolioId(int portfolioId)
+        {
+            return await _context.AssetHoldings
+                .Include(ah => ah.Asset)
+                .Where(ah => ah.PortfolioId == portfolioId)
+                .ToListAsync();
+        }
 
-
-    public async Task UpdatePortfolioAsync(Portfolio portfolio)
+        public async Task UpdatePortfolioAsync(Portfolio portfolio)
         {
             _context.Portfolios.Update(portfolio);
             await _context.SaveChangesAsync();

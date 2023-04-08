@@ -106,7 +106,8 @@ namespace PortfolioMaster.Controllers
             var viewModel = new EditPortfolioViewModel
             {
                 Id = portfolio.Id,
-                Name = portfolio.Name
+                Name = portfolio.Name,
+                AssetHoldings = portfolio.AssetHoldings,
             };
             return View(viewModel);
         }
@@ -125,10 +126,14 @@ namespace PortfolioMaster.Controllers
                 }
 
                 portfolio.Name = model.Name;
+                // Reload asset holdings
+                portfolio.AssetHoldings = await _portfolioService.GetAssetHoldingsByPortfolioId(model.Id);
 
                 await _portfolioService.UpdatePortfolioAsync(portfolio);
                 return RedirectToAction(nameof(Index));
             }
+            // Reload asset holdings before returning the model to the view
+            model.AssetHoldings = await _portfolioService.GetAssetHoldingsByPortfolioId(model.Id);
             return View(model);
         }
 

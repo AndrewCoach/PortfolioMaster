@@ -13,6 +13,7 @@ namespace PortfolioMaster.Services
         Task<Portfolio> CreatePortfolioAsync(Portfolio portfolio);
         Task<Portfolio> GetPortfolioByIdAsync(int id, string userId);
         Task UpdatePortfolioAsync(Portfolio portfolio);
+        Task<List<AssetHolding>> GetAssetHoldingsByPortfolioId(int portfolioId);
     }
 }
 
