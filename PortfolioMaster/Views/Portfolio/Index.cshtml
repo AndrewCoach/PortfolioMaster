@@ -1,0 +1,48 @@
+﻿@model PortfolioMaster.Models.ViewModels.PortfoliosViewModel
+
+@{
+    ViewData["Title"] = "Portfolios";
+}
+
+<h1>Portfolios</h1>
+
+<table id="portfoliosTable" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Total Value</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var portfolio in Model.Portfolios)
+        {
+            <tr>
+                <td>@portfolio.Name</td>
+                <td>@portfolio.TotalValue.ToString("C2")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@portfolio.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@portfolio.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success">Add Portfolio</a>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#portfoliosTable').DataTable({
+                "order": [[0, "asc"]],
+                "pageLength": 10,
+                "searching": true,
+                "lengthChange": true,
+            });
+        });
+    </script>
+}

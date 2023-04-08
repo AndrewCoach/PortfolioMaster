@@ -81,6 +81,15 @@
                 "searching": true,
                 "lengthChange": true,
             });
+
+            $('#assetId').on('change', function () {
+                if ($(this).val()) {
+                    $('#addButton').removeAttr('disabled');
+                } else {
+                    $('#addButton').attr('disabled', 'disabled');
+                }
+            });
         });
     </script>
 }
+

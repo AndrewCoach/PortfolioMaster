@@ -38,5 +38,4 @@ namespace PortfolioMaster.Models
             return GetTotalValue(currentPrice) - (GetTotalPurchasePrice() - GetTotalSalePrice());
         }
     }
-
 }

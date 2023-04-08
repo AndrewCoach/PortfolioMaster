@@ -53,11 +53,21 @@ namespace PortfolioMaster.Controllers
 
             var groupedHoldings = assetHoldings
                 .GroupBy(ah => new { ah.Asset, ah.Portfolio })
-                .Select(g => new AssetHolding
-                {
-                    Asset = g.Key.Asset,
-                    Portfolio = g.Key.Portfolio,
-                    Quantity = g.Sum(ah => ah.TransactionType == TransactionType.Purchase ? ah.Quantity : -ah.Quantity)
+                .Select(g => {
+
+                    var totalBuyValue = g.Where(ah => ah.TransactionType == TransactionType.Purchase).Sum(ah => ah.Price);
+                    var totalSellValue = g.Where(ah => ah.TransactionType == TransactionType.Sale).Sum(ah => ah.Price);
+
+                    return new GroupedHoldingViewModel
+                    {
+                        Asset = g.Key.Asset,
+                        Portfolio = g.Key.Portfolio,
+                        Quantity = g.Sum(ah => ah.TransactionType == TransactionType.Purchase ? ah.Quantity : -ah.Quantity),
+                        TotalQuantity = g.Sum(ah => ah.TransactionType == TransactionType.Purchase ? ah.Quantity : -ah.Quantity),
+                        AveragePurchasePrice = g.Where(ah => ah.TransactionType == TransactionType.Purchase).Average(ah => ah.Price),
+                        BuySellDiff = totalBuyValue - totalSellValue,
+                        BuySellPercentage = totalBuyValue != 0 ? (totalBuyValue - totalSellValue) / totalBuyValue * 100 : 0,
+                    };
                 })
                 .ToList();
 
