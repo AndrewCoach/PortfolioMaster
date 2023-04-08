@@ -28,7 +28,9 @@ namespace PortfolioMaster.Services
 
         public async Task<Portfolio> GetPortfolioById(int id)
         {
-            return await _context.Portfolios.FindAsync(id);
+            return await _context.Portfolios
+                .Include(p => p.AssetHoldings)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task CreatePortfolio(Portfolio portfolio)

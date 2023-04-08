@@ -132,7 +132,6 @@ namespace PortfolioMaster.Controllers
             return View(model);
         }
 
-        // GET: Portfolio/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
             var portfolio = await _portfolioService.GetPortfolioById(id);
@@ -140,8 +139,10 @@ namespace PortfolioMaster.Controllers
             {
                 return NotFound();
             }
+            ViewData["AssetHoldingsCount"] = portfolio.AssetHoldings.Count;
             return View(portfolio);
         }
+
 
         // POST: Portfolio/Delete/{id}
         [HttpPost, ActionName("Delete")]

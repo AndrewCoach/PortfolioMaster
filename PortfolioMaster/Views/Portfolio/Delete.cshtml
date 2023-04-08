@@ -8,8 +8,20 @@
 
 <p>Are you sure you want to delete the portfolio '@Model.Name'?</p>
 
-<form asp-action="Delete" method="post">
+<form asp-action="Delete" method="post" onsubmit="return confirmDelete();">
     <input type="hidden" asp-for="Id" />
     <button type="submit" class="btn btn-danger">Delete</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
+
+@section Scripts {
+    <script>
+        function confirmDelete() {
+            const assetHoldingsCount = @ViewData["AssetHoldingsCount"];
+            if (assetHoldingsCount > 0) {
+                return confirm("This portfolio still contains some holdings. Are you sure you want to delete it? All the holdings associated with it will be lost! Continue?");
+            }
+            return true;
+        }
+    </script>
+}
