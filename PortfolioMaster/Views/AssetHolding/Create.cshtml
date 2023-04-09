@@ -44,14 +44,13 @@
         </select>
         <span asp-validation-for="TransactionType" class="text-danger"></span>
     </div>
+    <br>
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <input type="submit" value="Create" class="btn btn-primary" /> |
+        <a asp-controller="@ViewBag.ReturnController" asp-action="@ViewBag.ReturnAction" asp-route-id="@Model.PortfolioId" class="btn btn-secondary">Cancel</a>
+        <a asp-controller="AssetHolding" asp-action="Index">Back to All Asset Holdings</a>
     </div>
 </form>
-
-<div>
-    <a asp-controller="AssetHolding" asp-action="Index">Back to List</a>
-</div>
 
 
 
