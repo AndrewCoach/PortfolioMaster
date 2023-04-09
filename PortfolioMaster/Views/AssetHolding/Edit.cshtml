@@ -11,6 +11,10 @@
     <div class="form-group">
         <input type="hidden" asp-for="Id" />
     </div>
+    <!-- Add hidden input fields for returnController and returnAction -->
+    <input type="hidden" name="returnController" value="@ViewBag.ReturnController" />
+    <input type="hidden" name="returnAction" value="@ViewBag.ReturnAction" />
+    <!-- End of hidden input fields -->
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="TransactionDate" class="control-label"></label>
@@ -41,5 +45,6 @@
 </form>
 
 <div>
-    <a asp-controller="AssetHolding" asp-action="Index">Back to List</a>
+    <a asp-controller="@ViewBag.ReturnController" asp-action="@ViewBag.ReturnAction" asp-route-id="@Model.PortfolioId" class="btn btn-secondary">Cancel</a>
+    <a asp-controller="AssetHolding" asp-action="Index">Back to All Asset Holdings</a>
 </div>

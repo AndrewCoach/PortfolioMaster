@@ -82,7 +82,7 @@ namespace PortfolioMaster.Controllers
         }
 
         [HttpGet, ActionName("Create")]
-        public async Task<IActionResult> CreateAssetHolding(int assetId)
+        public async Task<IActionResult> CreateAssetHolding(int assetId, string returnController, string returnAction)
         {
             var userId = _userManager.GetUserId(User);
             var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
@@ -92,14 +92,17 @@ namespace PortfolioMaster.Controllers
             {
                 AssetId = assetId,
                 AssetName = asset.Name,
+                PortfolioList = new SelectList(portfolios, "Id", "Name")
             };
-            ViewBag.PortfolioList = new SelectList(portfolios, "Id", "Name");
+
+            ViewBag.ReturnController = returnController;
+            ViewBag.ReturnAction = returnAction;
 
             return View(viewModel);
         }
 
         [HttpPost, ActionName("Create")]
-        public async Task<IActionResult> CreateAssetHolding(CreateAssetHoldingViewModel model)
+        public async Task<IActionResult> CreateAssetHolding(CreateAssetHoldingViewModel model, string returnController, string returnAction)
         {
             var userId = _userManager.GetUserId(User);
             if (ModelState.IsValid)
@@ -115,16 +118,26 @@ namespace PortfolioMaster.Controllers
                 };
 
                 await _assetHoldingService.AddAssetHoldingAsync(transaction);
-                return RedirectToAction(nameof(Index));
+                if (!string.IsNullOrEmpty(returnController) && !string.IsNullOrEmpty(returnAction))
+                {
+                    return RedirectToAction(returnAction, returnController, new { id = transaction.PortfolioId });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             // If the ModelState is not valid, repopulate the portfolios dropdown and return to the view.
             var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
-            ViewBag.PortfolioList = new SelectList(portfolios, "Id", "Name");
+            model.PortfolioList = new SelectList(portfolios, "Id", "Name");
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id, string returnController, string returnAction)
         {
             if (id == null)
             {
@@ -150,23 +163,28 @@ namespace PortfolioMaster.Controllers
                 TransactionType = transaction.TransactionType
             };
 
+            ViewBag.ReturnController = returnController;
+            ViewBag.ReturnAction = returnAction;
+
             return View(dto);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TransactionDate,TransactionType,Quantity,Price")] UpdateAssetHoldingViewModel holding)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TransactionDate,TransactionType,Quantity,Price")] UpdateAssetHoldingViewModel holding, string returnController, string returnAction)
         {
             if (id != holding.Id)
             {
                 return NotFound();
             }
 
+
             if (ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(User);
                 bool updated = await _assetHoldingService.UpdateAssetHoldingAsync(holding, userId);
+                var transaction = await _assetHoldingService.GetHoldingByIdAsync(holding.Id, userId);
 
                 if (!updated)
                 {
@@ -174,14 +192,22 @@ namespace PortfolioMaster.Controllers
                     return View(holding);
                 }
 
-                return RedirectToAction(nameof(Index));
+                if (!string.IsNullOrEmpty(returnController) && !string.IsNullOrEmpty(returnAction))
+                {
+                    return RedirectToAction(returnAction, returnController, new { id = transaction.PortfolioId });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             // If we reach this point, an error occurred, and we should redisplay the form with the validation errors.
             return View(holding);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id, string returnController, string returnAction)
         {
             if (id == null)
             {
@@ -196,14 +222,18 @@ namespace PortfolioMaster.Controllers
                 return NotFound();
             }
 
+            ViewBag.ReturnController = returnController;
+            ViewBag.ReturnAction = returnAction;
+
             return View(assetHolding);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string returnController, string returnAction)
         {
             var userId = _userManager.GetUserId(User);
+            var assetHolding = await _assetHoldingService.GetHoldingByIdAsync(id, userId);
             bool deleted = await _assetHoldingService.DeleteHoldingAsync(id, userId);
 
             if (!deleted)
@@ -211,9 +241,15 @@ namespace PortfolioMaster.Controllers
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+            if (!string.IsNullOrEmpty(returnController) && !string.IsNullOrEmpty(returnAction))
+            {
+                return RedirectToAction(returnAction, returnController, new { id = assetHolding.PortfolioId });
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
-
     }
 }
 

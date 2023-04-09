@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 
 namespace PortfolioMaster.Models.ViewModels
 {
@@ -37,5 +40,7 @@ namespace PortfolioMaster.Models.ViewModels
         [Range(0.000001, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
         [Display(Name = "Price (USD)")]
         public decimal Price { get; set; }
+
+        public SelectList? PortfolioList { get; set; }
     }
 }

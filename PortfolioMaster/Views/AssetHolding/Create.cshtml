@@ -9,6 +9,10 @@
 
 <form asp-controller="AssetHolding" asp-action="Create" method="post">
     <input type="hidden" asp-for="AssetId" />
+    <!-- Add hidden input fields for returnController and returnAction -->
+    <input type="hidden" name="returnController" value="@ViewBag.ReturnController" />
+    <input type="hidden" name="returnAction" value="@ViewBag.ReturnAction" />
+    <!-- End of hidden input fields -->
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="AssetName" class="control-label"></label>
@@ -16,7 +20,7 @@
     </div>
     <div class="form-group">
         <label asp-for="PortfolioId" class="control-label">Portfolio</label>
-        <select asp-for="PortfolioId" asp-items="ViewBag.PortfolioList" class="form-control" style="max-width: 300px;"></select>
+        <select asp-for="PortfolioId" asp-items="Model.PortfolioList" class="form-control" style="max-width: 300px;"></select>
     </div>
     <div class="form-group">
         <label asp-for="Quantity" class="control-label"></label>
