@@ -28,35 +28,42 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Assets
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="PreciousMetals" asp-action="Index">Precious Metals</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-controller="AssetHolding" asp-action="Index">Asset Holdings</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-controller="Stocks" asp-action="Index">Stocks</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-controller="Portfolio" asp-action="Index">Portfolios</a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Assets
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Portfolio" asp-action="Index">Portfolios</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="AssetHolding" asp-action="Index">All My Holdings</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="PreciousMetals" asp-action="Index">Precious Metals</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Stocks" asp-action="Index">Stocks</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
-                    <div class="d-flex">
+                    <div class="d-flex align-items-center">
+                        <!-- Add 'align-items-center' class to center the text vertically -->
+                        <div class="me-3 text-muted" style="font-size: 0.9rem;">
+                            <!-- Add 'text-muted' class for a nice color and adjust font-size -->
+                            <span>@DateTime.Now.ToString("dddd, MMMM d, yyyy")</span>
+                            <span id="localTime"></span>
+                        </div>
                         @await Html.PartialAsync("_LoginPartial")
                     </div>
                 </div>
             </div>
         </nav>
     </header>
-
-
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -68,6 +75,15 @@
             &copy; 2023 - PortfolioMaster - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const localTime = now.toLocaleTimeString();
+            document.getElementById("localTime").textContent = localTime;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
     <!-- Include DataTables JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
