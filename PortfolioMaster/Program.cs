@@ -11,13 +11,15 @@ using Hangfire;
 using PortfolioMaster.Workers;
 using Hangfire.SqlServer;
 using PortfolioMaster.Contexts;
+using System.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Update the builder to include UserSecrets for the development environment
 builder.Configuration.AddUserSecrets<Program>(optional: true);
 
-builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -36,12 +38,20 @@ builder.Services.AddAuthentication()
         options.ClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"];
     });
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromDays(3); // Set the token lifespan to 3 days
+});
+
 // Add default DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // register email handler
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection("SendGrid"));
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
 
 builder.Services.AddScoped<PreciousMetalsService>();
 builder.Services.AddScoped<AssetHoldingService>();

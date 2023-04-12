@@ -3,6 +3,14 @@
 
 @{
     ViewData["Title"] = "Log in";
+    var emailConfirmed = ViewData["EmailConfirmed"] as bool? ?? false;
+}
+
+@if (emailConfirmed)
+{
+    <div class="alert alert-success" role="alert">
+        Thanks for confirming your email, you can now log in with your credentials!
+    </div>
 }
 
 <h1>@ViewData["Title"]</h1>
