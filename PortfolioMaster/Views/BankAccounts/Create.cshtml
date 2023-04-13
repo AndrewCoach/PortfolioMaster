@@ -1,0 +1,33 @@
+﻿@model PortfolioMaster.Models.ViewModels.CreateBankAccountViewModel
+@{
+    ViewData["Title"] = "Create Bank Account";
+}
+
+<h2>Create Bank Account</h2>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="InterestRate" class="control-label">Interest Rate (%)</label>
+        <input asp-for="InterestRate" class="form-control" />
+        <span asp-validation-for="InterestRate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TotalValue" class="control-label">Total Value (USD)</label>
+        <input asp-for="TotalValue" class="form-control" />
+        <span asp-validation-for="TotalValue" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+

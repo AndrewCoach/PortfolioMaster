@@ -8,7 +8,6 @@ namespace PortfolioMaster.Models.Configuration
     {
         public void Configure(EntityTypeBuilder<PeerToPeerLoan> builder)
         {
-            builder.Property(p => p.InterestRate).HasColumnType("decimal(18, 4)");
         }
     }
 }

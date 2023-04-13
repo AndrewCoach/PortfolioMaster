@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using PortfolioMaster.Models;
+using PortfolioMaster.Models.ViewModels;
 
 namespace PortfolioMaster.Services
 {
@@ -9,8 +10,11 @@ namespace PortfolioMaster.Services
         Task<List<BankAccount>> GetAllAsync(string userId);
         Task<BankAccount> GetByIdAsync(int id, string userId);
         Task CreateAsync(BankAccount bankAccount);
-        Task UpdateAsync(BankAccount bankAccount);
+        Task UpdateBankAccountAsync(BankAccountViewModel bankAccountViewModel);
+
         Task DeleteAsync(int id, string userId);
+
+        Task UpdateTotalValueAsync(int bankAccountId, decimal newTotalValue);
     }
 }
 

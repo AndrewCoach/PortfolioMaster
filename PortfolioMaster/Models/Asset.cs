@@ -8,6 +8,8 @@ namespace PortfolioMaster.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public decimal InterestRate { get; set; }
+
         public string UserId { get; set; }
         // Add this User navigation property
         [ForeignKey("UserId")]

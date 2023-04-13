@@ -27,6 +27,7 @@ namespace PortfolioMaster.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new PreciousMetalsConfiguration());
+            modelBuilder.ApplyConfiguration(new AssetConfiguration());
             modelBuilder.ApplyConfiguration(new StockConfiguration());
             modelBuilder.ApplyConfiguration(new PeerToPeerLoanConfiguration());
             modelBuilder.ApplyConfiguration(new PortfolioConfiguration());

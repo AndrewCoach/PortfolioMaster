@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PortfolioMaster.Contexts;
 using PortfolioMaster.Data;
 using PortfolioMaster.Models;
+using PortfolioMaster.Models.ViewModels;
 
 namespace PortfolioMaster.Services
 {
@@ -33,10 +34,19 @@ namespace PortfolioMaster.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(BankAccount bankAccount)
+        public async Task UpdateBankAccountAsync(BankAccountViewModel bankAccountViewModel)
         {
-            _context.Entry(bankAccount).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            var bankAccount = await _context.BankAccounts.FindAsync(bankAccountViewModel.Id);
+
+            if (bankAccount != null)
+            {
+                bankAccount.Name = bankAccountViewModel.Name;
+                bankAccount.InterestRate = bankAccountViewModel.InterestRate;
+                bankAccount.TotalValue = bankAccountViewModel.TotalValue;
+
+                _context.BankAccounts.Update(bankAccount);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteAsync(int id, string userId)
@@ -45,6 +55,16 @@ namespace PortfolioMaster.Services
             if (bankAccount != null)
             {
                 _context.BankAccounts.Remove(bankAccount);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateTotalValueAsync(int bankAccountId, decimal newTotalValue)
+        {
+            var bankAccount = await _context.BankAccounts.FindAsync(bankAccountId);
+            if (bankAccount != null)
+            {
+                bankAccount.TotalValue = newTotalValue;
                 await _context.SaveChangesAsync();
             }
         }
