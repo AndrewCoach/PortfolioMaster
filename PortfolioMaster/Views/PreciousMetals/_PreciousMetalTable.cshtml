@@ -3,7 +3,7 @@
 @{
     var editButtonStyle = "btn btn-sm btn-primary";
     var deleteButtonStyle = "btn btn-sm btn-danger";
-    decimal totalPL = @Model.AssetHoldings.Sum(hh => hh.ProfitLoss);
+    decimal totalPL = @Model.AssetHoldings.Sum(hh =>  hh.ProfitLoss);
     decimal totalPercentage = @Model.TotalPurchasePrice != 0 ? (totalPL / @Model.TotalPurchasePrice) * 100 : 0;
     decimal totalQuantity = @Model.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Quantity : -h.Quantity);
     decimal totalCashflow = @Model.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Price : -h.Price);

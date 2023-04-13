@@ -22,6 +22,7 @@ namespace PortfolioMaster.Contexts
         public DbSet<PeerToPeerLoan> PeerToPeerLoans { get; set; }
         public DbSet<AssetHolding> AssetHoldings { get; set; }
         public DbSet<PreciousMetalPrice> PreciousMetalPrices { get; set; }
+        public DbSet<BankAccount> BankAccounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +32,7 @@ namespace PortfolioMaster.Contexts
             modelBuilder.ApplyConfiguration(new PortfolioConfiguration());
             modelBuilder.ApplyConfiguration(new AssetHoldingConfiguration());
             modelBuilder.ApplyConfiguration(new PreciousMetalPriceConfiguration());
+            modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
 
             base.OnModelCreating(modelBuilder);
 
