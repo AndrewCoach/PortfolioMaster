@@ -34,6 +34,15 @@ namespace PortfolioMaster.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<BankAccount> GetBankAccountWithHoldingsAsync(int id, string userId)
+        {
+            return await _context.BankAccounts
+                .Include(b => b.AssetHoldings)
+                .ThenInclude(b => b.Portfolio)
+                .SingleOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+        }
+
+
         public async Task UpdateBankAccountAsync(BankAccountViewModel bankAccountViewModel)
         {
             var bankAccount = await _context.BankAccounts.FindAsync(bankAccountViewModel.Id);

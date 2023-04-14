@@ -100,7 +100,7 @@ namespace PortfolioMaster.Controllers
                 return NotFound();
             }
 
-            var bankAccount = await _bankAccountService.GetByIdAsync(id.Value, _userManager.GetUserId(User));
+            var bankAccount = await _bankAccountService.GetBankAccountWithHoldingsAsync(id.Value, _userManager.GetUserId(User));
             if (bankAccount == null)
             {
                 return NotFound();

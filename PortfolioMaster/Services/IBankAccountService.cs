@@ -12,6 +12,7 @@ namespace PortfolioMaster.Services
         Task CreateAsync(BankAccount bankAccount);
         Task UpdateBankAccountAsync(BankAccountViewModel bankAccountViewModel);
 
+        Task<BankAccount> GetBankAccountWithHoldingsAsync(int id, string userId);
         Task DeleteAsync(int id, string userId);
         Task DeleteBankAccountWithHoldingsAsync(int id, string userId);
         Task UpdateTotalValueAsync(int bankAccountId, decimal newTotalValue);
