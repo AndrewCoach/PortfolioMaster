@@ -59,6 +59,19 @@ namespace PortfolioMaster.Services
             }
         }
 
+        public async Task DeleteBankAccountWithHoldingsAsync(int id, string userId)
+        {
+            var bankAccount = await GetByIdAsync(id, userId);
+            if (bankAccount != null)
+            {
+                var assetHoldings = _context.AssetHoldings.Where(ah => ah.AssetId == id);
+                _context.AssetHoldings.RemoveRange(assetHoldings);
+                _context.BankAccounts.Remove(bankAccount);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
         public async Task UpdateTotalValueAsync(int bankAccountId, decimal newTotalValue)
         {
             var bankAccount = await _context.BankAccounts.FindAsync(bankAccountId);

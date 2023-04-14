@@ -93,5 +93,34 @@ namespace PortfolioMaster.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var bankAccount = await _bankAccountService.GetByIdAsync(id.Value, _userManager.GetUserId(User));
+            if (bankAccount == null)
+            {
+                return NotFound();
+            }
+
+            if (await _assetHoldingService.BankAccountHasHoldingsAsync(id.Value))
+            {
+                ViewBag.HasHoldings = true;
+            }
+
+            return View(bankAccount);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _bankAccountService.DeleteBankAccountWithHoldingsAsync(id, _userManager.GetUserId(User));
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

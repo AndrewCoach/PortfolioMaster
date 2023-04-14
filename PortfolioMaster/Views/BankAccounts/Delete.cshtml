@@ -1,0 +1,48 @@
+﻿@model PortfolioMaster.Models.BankAccount
+@{
+    ViewData["Title"] = "Delete Bank Account";
+}
+
+<h2>Delete Bank Account</h2>
+
+<div>
+    <h4>Bank Account</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+
+<form id="deleteForm" asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <button type="button" class="btn btn-danger" onclick="confirmAndSubmit()">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@if (ViewBag.HasHoldings == true)
+{
+    <script>
+        function confirmAndSubmit() {
+            if (confirm("This bank account has holdings associated with it. Do you really want to delete it?")) {
+                document.getElementById('deleteForm').submit();
+            } else {
+                location.href = '@Url.Action("Index", "BankAccounts")';
+            }
+        }
+    </script>
+}
+else
+{
+    <script>
+        function confirmAndSubmit() {
+            document.getElementById('deleteForm').submit();
+        }
+    </script>
+}

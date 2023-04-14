@@ -13,7 +13,7 @@ namespace PortfolioMaster.Services
         Task UpdateBankAccountAsync(BankAccountViewModel bankAccountViewModel);
 
         Task DeleteAsync(int id, string userId);
-
+        Task DeleteBankAccountWithHoldingsAsync(int id, string userId);
         Task UpdateTotalValueAsync(int bankAccountId, decimal newTotalValue);
     }
 }
