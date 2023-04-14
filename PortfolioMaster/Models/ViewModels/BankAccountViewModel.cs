@@ -10,5 +10,7 @@ namespace PortfolioMaster.Models.ViewModels
 
         [Required]
         public decimal TotalValue { get; set; }
+
+        public List<AssetHolding> AssetHoldings { get; set; }
     }
 }

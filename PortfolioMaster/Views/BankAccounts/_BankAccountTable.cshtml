@@ -1,0 +1,56 @@
+﻿@model PortfolioMaster.Models.ViewModels.BankAccountViewModel
+@{
+    decimal annualInterests = Model.TotalValue * (Model.InterestRate / 100);
+    decimal contributed = Model.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Price : -h.Price);
+    decimal collectedInterests = Model.TotalValue - contributed;
+}
+
+<tr class="clickable-row" data-bs-toggle="collapse" data-bs-target="#account-@Model.Id" onclick="toggleRow(this)">
+    <td>
+        <div>
+            <i class="fas fa-chevron-down chevron-icon"></i>
+            @Model.Name
+        </div>
+    </td>
+    <td>@Html.DisplayFor(_ => Model.InterestRate)</td>
+    <td>$@Html.DisplayFor(_ => contributed)</td>
+    <td>$@Html.DisplayFor(_ => Model.TotalValue)</td>
+    <td>$@Html.DisplayFor(_ => collectedInterests)</td>
+    <td>$@Html.DisplayFor(_ => annualInterests)</td>
+</tr>
+<tr>
+    <td colspan="5">
+        <div id="account-@Model.Id" class="collapse">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Transaction Date</th>
+                        <th>Transaction</th>
+                        <th>Quantity (Oz)</th>
+                        <th>Price (USD)</th>
+                        <th>Actions</th>
+                        <th class="text-end">
+                            <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@Model.Id" asp-route-returnController="BankAccounts" asp-route-returnAction="Index" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Add</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var asset in Model.AssetHoldings)
+                    {
+                        <tr>
+                            <td>@asset.TransactionDate</td>
+                            <td style="color: @(asset.TransactionType == TransactionType.Purchase ? "green" : "red")">@asset.TransactionType</td>
+                            <td>@asset.Quantity</td>
+                            <td>$@Html.DisplayFor(_ => asset.Price)</td>
+                            <td>
+                                <a asp-controller="AssetHolding" asp-action="Edit" asp-route-returnController="BankAccounts" asp-route-returnAction="Index" asp-route-id="@asset.Id" class="btn btn-primary btn-sm">Edit</a>
+                                <a asp-controller="AssetHolding" asp-action="Delete" asp-route-returnController="BankAccounts" asp-route-returnAction="Index" asp-route-id="@asset.Id" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </td>
+</tr>
+

@@ -28,7 +28,7 @@ namespace PortfolioMaster.Models.ViewModels
 
         [Required]
         [Range(0.000001, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
-        [Display(Name = "Quantity (Oz)")]
+        [Display(Name = "Quantity")]
         public decimal Quantity { get; set; }
 
         [Required]

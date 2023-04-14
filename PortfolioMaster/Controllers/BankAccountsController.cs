@@ -14,23 +14,29 @@ namespace PortfolioMaster.Controllers
     {
         private readonly IBankAccountService _bankAccountService;
         private readonly UserManager<User> _userManager;
+        private readonly AssetHoldingService _assetHoldingService;
 
-        public BankAccountsController(IBankAccountService bankAccountService, UserManager<User> userManager)
+        public BankAccountsController(IBankAccountService bankAccountService, UserManager<User> userManager, AssetHoldingService assetHoldingService)
         {
             _bankAccountService = bankAccountService;
             _userManager = userManager;
+            _assetHoldingService = assetHoldingService;
         }
 
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
             var bankAccounts = await _bankAccountService.GetAllAsync(userId);
+            var allAssetHoldings = await _assetHoldingService.GetAllHoldingsForUserAsync(userId);
             var bankAccountViewModels = bankAccounts.Select(b => new BankAccountViewModel
             {
                 Id = b.Id,
                 Name = b.Name,
                 InterestRate = b.InterestRate,
-                TotalValue = b.TotalValue
+                TotalValue = b.TotalValue,
+                AssetHoldings = allAssetHoldings
+            .Where(ah => ah.Asset.Id == b.Id)
+            .ToList()
             }).ToList();
             return View(bankAccountViewModels);
         }

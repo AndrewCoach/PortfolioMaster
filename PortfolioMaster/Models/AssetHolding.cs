@@ -11,7 +11,7 @@ namespace PortfolioMaster.Models
 
         public DateTime TransactionDate { get; set; }
 
-        [Display(Name = "Quantity (Oz)")]
+        [Display(Name = "Quantity")]
         public decimal Quantity { get; set; }
 
         [Display(Name = "Price (USD)")]
