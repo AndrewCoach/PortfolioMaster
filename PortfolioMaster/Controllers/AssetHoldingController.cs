@@ -128,6 +128,9 @@ namespace PortfolioMaster.Controllers
                 }
             }
 
+            ViewBag.ReturnController = returnController;
+            ViewBag.ReturnAction = returnAction;
+
             // If the ModelState is not valid, repopulate the portfolios dropdown and return to the view.
             var portfolios = await _portfolioService.GetPortfoliosByUserId(userId);
             model.PortfolioList = new SelectList(portfolios, "Id", "Name");
@@ -201,6 +204,9 @@ namespace PortfolioMaster.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
+
+            ViewBag.ReturnController = returnController;
+            ViewBag.ReturnAction = returnAction;
 
             // If we reach this point, an error occurred, and we should redisplay the form with the validation errors.
             return View(holding);

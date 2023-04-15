@@ -25,11 +25,10 @@ namespace PortfolioMaster.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> BankAccountHasHoldingsAsync(int bankAccountId)
+        public async Task<bool> AssetHasHoldingsAsync(int assetId)
         {
-            return await _context.AssetHoldings.AnyAsync(ah => ah.AssetId == bankAccountId);
+            return await _context.AssetHoldings.AnyAsync(ah => ah.AssetId == assetId);
         }
-
 
         public async Task<AssetHolding> GetHoldingByIdAsync(int id, string userId)
         {

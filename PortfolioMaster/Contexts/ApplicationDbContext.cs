@@ -23,6 +23,7 @@ namespace PortfolioMaster.Contexts
         public DbSet<AssetHolding> AssetHoldings { get; set; }
         public DbSet<PreciousMetalPrice> PreciousMetalPrices { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<VentureCapital> VentureCapitalAssets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,7 @@ namespace PortfolioMaster.Contexts
             modelBuilder.ApplyConfiguration(new AssetHoldingConfiguration());
             modelBuilder.ApplyConfiguration(new PreciousMetalPriceConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
+            modelBuilder.ApplyConfiguration(new VentureCapitalConfiguration());
 
             base.OnModelCreating(modelBuilder);
 

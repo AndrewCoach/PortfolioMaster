@@ -10,15 +10,15 @@ namespace PortfolioMaster.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]
-    public class BankAccountsController : Controller
+    public class VentureCapitalController : Controller
     {
-        private readonly IBankAccountService _bankAccountService;
+        private readonly IVentureCapitalService _ventureCapitalService;
         private readonly UserManager<User> _userManager;
         private readonly AssetHoldingService _assetHoldingService;
 
-        public BankAccountsController(IBankAccountService bankAccountService, UserManager<User> userManager, AssetHoldingService assetHoldingService)
+        public VentureCapitalController(IVentureCapitalService ventureService, UserManager<User> userManager, AssetHoldingService assetHoldingService)
         {
-            _bankAccountService = bankAccountService;
+            _ventureCapitalService = ventureService;
             _userManager = userManager;
             _assetHoldingService = assetHoldingService;
         }
@@ -26,66 +26,61 @@ namespace PortfolioMaster.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
-            var bankAccounts = await _bankAccountService.GetAllAsync(userId);
+            var ventures = await _ventureCapitalService.GetAllAsync(userId);
             var allAssetHoldings = await _assetHoldingService.GetAllHoldingsForUserAsync(userId);
-            var bankAccountViewModels = bankAccounts.Select(b => new BankAccountViewModel
+            var ventureViewModels = ventures.Select(b => new VentureCapitalViewModel
             {
                 Id = b.Id,
                 Name = b.Name,
-                InterestRate = b.InterestRate,
                 TotalValue = b.TotalValue,
                 AssetHoldings = allAssetHoldings
             .Where(ah => ah.Asset.Id == b.Id)
             .ToList()
             }).ToList();
-            return View(bankAccountViewModels);
+            return View(ventureViewModels);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateTotalValue([FromForm] BankAccountViewModel bankAccountViewModel)
+        public async Task<IActionResult> UpdateTotalValue([FromForm] VentureCapitalViewModel vantureViewModel)
         {
             if (ModelState.IsValid)
             {
-                await _bankAccountService.UpdateBankAccountAsync(bankAccountViewModel);
+                await _ventureCapitalService.UpdateVentureCapitalAsync(vantureViewModel);
                 return RedirectToAction(nameof(Index));
             }
 
             var userId = _userManager.GetUserId(User);
-            var bankAccounts = await _bankAccountService.GetAllAsync(userId);
+            var ventures = await _ventureCapitalService.GetAllAsync(userId);
 
-            var bankAccountViewModels = bankAccounts.Select(b => new BankAccountViewModel
+            var ventureViewModels = ventures.Select(b => new VentureCapitalViewModel
             {
                 Id = b.Id,
                 Name = b.Name,
-                InterestRate = b.InterestRate,
                 TotalValue = b.TotalValue
             }).ToList();
 
-            return View("Index", bankAccountViewModels);
+            return View("Index", ventureViewModels);
         }
 
-        // GET: BankAccounts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: BankAccounts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateBankAccountViewModel model)
+        public async Task<IActionResult> Create(CreateVentureCapitalViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var bankAccount = new BankAccount
+                var ventureCapital = new VentureCapital
                 {
                     Name = model.Name,
-                    InterestRate = model.InterestRate,
                     TotalValue = model.TotalValue,
                     UserId = _userManager.GetUserId(User)
                 };
 
-                await _bankAccountService.CreateAsync(bankAccount);
+                await _ventureCapitalService.CreateAsync(ventureCapital);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -100,8 +95,8 @@ namespace PortfolioMaster.Controllers
                 return NotFound();
             }
 
-            var bankAccount = await _bankAccountService.GetBankAccountWithHoldingsAsync(id.Value, _userManager.GetUserId(User));
-            if (bankAccount == null)
+            var ventureCapital = await _ventureCapitalService.GetVentureCapitalWithHoldingsAsync(id.Value, _userManager.GetUserId(User));
+            if (ventureCapital == null)
             {
                 return NotFound();
             }
@@ -111,14 +106,14 @@ namespace PortfolioMaster.Controllers
                 ViewBag.HasHoldings = true;
             }
 
-            return View(bankAccount);
+            return View(ventureCapital);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _bankAccountService.DeleteBankAccountWithHoldingsAsync(id, _userManager.GetUserId(User));
+            await _ventureCapitalService.DeleteVentureCapitalWithHoldingsAsync(id, _userManager.GetUserId(User));
             return RedirectToAction(nameof(Index));
         }
 

@@ -59,6 +59,7 @@ builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<AssetService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 builder.Services.AddScoped<IBankAccountService, BankAccountService>();
+builder.Services.AddScoped<IVentureCapitalService, VentureCapitalService>();
 
 
 // Add services to the container.

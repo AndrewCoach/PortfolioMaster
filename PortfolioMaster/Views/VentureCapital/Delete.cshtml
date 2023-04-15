@@ -1,0 +1,63 @@
+﻿@model PortfolioMaster.Models.VentureCapital
+@{
+    ViewData["Title"] = "Delete Venture Capital Asset";
+}
+
+<h2>Delete Venture Capital Asset</h2>
+
+<div>
+    <h4>Venture Capital Asset</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalValue)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalValue)
+        </dd>
+    </dl>
+</div>
+
+<h4>Associated Asset Holdings</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Portfolio</th>
+            <th>Transaction Date</th>
+            <th>Transaction Type</th>
+            <th>Price (USD)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var holding in Model.AssetHoldings)
+        {
+            <tr>
+                <td>@holding.Portfolio.Name</td>
+                <td>@holding.TransactionDate.ToShortDateString()</td>
+                <td>@holding.TransactionType</td>
+                <td>$@holding.Price.ToString("N2")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.HasHoldings == true)
+{
+    <div class="alert alert-warning" role="alert">
+        This Venture Capital Asset has holdings associated with it. Deleting this asset will also delete all associated holdings.
+    </div>
+}
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
