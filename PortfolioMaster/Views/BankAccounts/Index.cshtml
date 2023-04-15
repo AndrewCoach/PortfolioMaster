@@ -22,6 +22,14 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            var simpleAssetHoldingsList = Model.Select(item => item.AssetHoldings.Select(h => new
+            {
+                transactionDate = h.TransactionDate,
+                transactionType = h.TransactionType,
+                price = h.Price
+            }).ToList());
+        }
         @foreach (var item in Model)
         {
             @await Html.PartialAsync("_BankAccountTable", item)
@@ -103,22 +111,100 @@
         transform: rotate(180deg);
     }
 </style>
-<script>
-    function toggleRow(chevron) {
-        const icon = chevron.querySelector(".chevron-icon");
-        icon.classList.toggle("rotate");
-    }
-    function submitUpdate(id, name) {
-        var changedName = document.getElementById('name-' + id).value;
-        var interestRate = document.getElementById('interestRate-' + id).value;
-        var totalValue = document.getElementById('totalValue-' + id).value;
 
-        document.getElementById('hiddenId').value = id;
-        document.getElementById('hiddenName').value = changedName;
-        document.getElementById('hiddenInterestRate').value = interestRate;
-        document.getElementById('hiddenTotalValue').value = totalValue;
-        document.getElementById('hiddenAssetHoldings').value = {};
-        document.getElementById('updateForm').submit();
-    }
-</script>
+@section Scripts {
+    <script>
+        function toggleRow(chevron) {
+            const icon = chevron.querySelector(".chevron-icon");
+            icon.classList.toggle("rotate");
+        }
+        function submitUpdate(id, name) {
+            var changedName = document.getElementById('name-' + id).value;
+            var interestRate = document.getElementById('interestRate-' + id).value;
+            var totalValue = document.getElementById('totalValue-' + id).value;
 
+            document.getElementById('hiddenId').value = id;
+            document.getElementById('hiddenName').value = changedName;
+            document.getElementById('hiddenInterestRate').value = interestRate;
+            document.getElementById('hiddenTotalValue').value = totalValue;
+            document.getElementById('hiddenAssetHoldings').value = {};
+            document.getElementById('updateForm').submit();
+        }
+        function generateCumulativeContributionsChart(elementId, assetHoldings) {
+            // Prepare data for the chart
+            assetHoldings.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate));
+
+            var dates = [];
+            var cumulativeContributions = [];
+            var cumulativeSum = 0;
+
+            assetHoldings.forEach(assetHolding => {
+                var date = new Date(assetHolding.transactionDate);
+                var dateString = date.toLocaleDateString();
+
+                if (!dates.includes(dateString)) {
+                    dates.push(dateString);
+                }
+
+                if (assetHolding.transactionType === 0) {
+                    cumulativeSum += assetHolding.price;
+                } else {
+                    cumulativeSum -= assetHolding.price;
+                }
+
+                cumulativeContributions.push(cumulativeSum);
+            });
+
+            // Create the chart
+            var ctx = document.getElementById(elementId).getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Cumulative Contributions',
+                        data: cumulativeContributions,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                        pointBorderColor: 'rgba(75, 192, 192, 1)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Transaction Date'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Cumulative Contributions (USD)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        @{
+            int index = 0;
+            foreach (var item in Model)
+            {
+                var chartElementId = $"cumulativeContributionsChart-{item.Id}";
+                var assetHoldingsData = Json.Serialize(simpleAssetHoldingsList.ElementAt(index));
+
+                <text>
+                    generateCumulativeContributionsChart('@chartElementId', @assetHoldingsData);
+                </text>
+
+                index++;
+            }
+        }
+    </script>
+}

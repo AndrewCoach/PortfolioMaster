@@ -50,7 +50,7 @@
                     }
                 </tbody>
             </table>
+            <canvas id="cumulativeContributionsChart-@Model.Id" data-asset-holdings='@Json.Serialize((IEnumerable<object>)ViewData["simpleAssetHoldings"])'></canvas>
         </div>
     </td>
 </tr>
-
