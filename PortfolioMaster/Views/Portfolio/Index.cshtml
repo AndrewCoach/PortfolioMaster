@@ -19,7 +19,7 @@
         {
             <tr>
                 <td>@portfolio.Name</td>
-                <td>@portfolio.TotalValue.ToString("C2")</td>
+                <td>$@Html.DisplayFor(_ => portfolio.TotalValue)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@portfolio.Id" class="btn btn-primary btn-sm">Edit</a>
                     <a asp-action="Delete" asp-route-id="@portfolio.Id" class="btn btn-danger btn-sm">Delete</a>

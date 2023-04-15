@@ -7,7 +7,7 @@
         <tr>
             <th>Asset Name</th>
             <th>Portfolio Name</th>
-            <th>Total Quantity (Oz)</th>
+            <th>Total Quantity</th>
             <th>Average Purchase Price (USD)</th>
             <th>Buy/Sell Diff (USD)</th>
             <th>Buy/Sell %</th>
@@ -20,8 +20,8 @@
             <td>@item.Asset.Name</td>
             <td>@item.Portfolio.Name</td>
             <td>@item.TotalQuantity</td>
-            <td>@item.AveragePurchasePrice.ToString("C2")</td>
-            <td>@item.BuySellDiff.ToString("C2")</td>
+            <td>$@Html.DisplayFor(_ => item.AveragePurchasePrice)</td>
+                <td>$@Html.DisplayFor(_ => item.BuySellDiff)</td>
             <td>@item.BuySellPercentage.ToString("0.00") %</td>
         </tr>
     }

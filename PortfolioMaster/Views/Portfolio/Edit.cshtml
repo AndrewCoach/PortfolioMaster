@@ -37,7 +37,7 @@
                 <td>@assetHolding.Asset.Name</td>
                 <td>@assetHolding.TransactionDate.ToShortDateString()</td>
                 <td>@assetHolding.TransactionType.ToString()</td>
-                <td>@assetHolding.Price.ToString("C2")</td>
+                <td>$@Html.DisplayFor(_ => assetHolding.Price)</td>
                 <td>
                     <a asp-controller="AssetHolding" asp-action="Edit" asp-route-id="@assetHolding.Id" asp-route-returnController="Portfolio" asp-route-returnAction="Edit" class="btn btn-primary btn-sm">Edit</a>
                     <a asp-controller="AssetHolding" asp-action="Delete" asp-route-id="@assetHolding.Id" asp-route-returnController="Portfolio" asp-route-returnAction="Edit" class="btn btn-danger btn-sm">Delete</a>
