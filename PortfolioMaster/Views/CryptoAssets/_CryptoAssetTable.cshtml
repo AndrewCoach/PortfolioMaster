@@ -1,0 +1,114 @@
+﻿@using PortfolioMaster.Models.ViewModels;
+@model AssetViewModel
+@{
+    var editButtonStyle = "btn btn-sm btn-primary";
+    var deleteButtonStyle = "btn btn-sm btn-danger";
+    decimal totalPL = @Model.AssetHoldings.Sum(hh =>  hh.ProfitLoss);
+    decimal totalPercentage = @Model.TotalPurchasePrice != 0 ? (totalPL / @Model.TotalPurchasePrice) * 100 : 0;
+    decimal totalQuantity = @Model.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Quantity : -h.Quantity);
+    decimal totalCashflow = @Model.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Price : -h.Price);
+}
+
+<tr class="clickable-row" data-bs-toggle="collapse" data-bs-target="#holding-@Model.Asset.Id" onclick="toggleRow(this)">
+    <td>
+        <div>
+            <i class="fas fa-chevron-down chevron-icon"></i>
+            @Model.Asset.Name
+        </div>
+    </td>
+    <td>@Html.DisplayFor(_ => @totalQuantity)</td>
+    <td>$@Html.DisplayFor(_ => totalCashflow)</td>
+    <td>$@Html.DisplayFor(_ => Model.CurrentPrice)</td>
+    <td>$@Html.DisplayFor(_ => Model.TotalValue)</td>
+    <td style="color: @(totalPL < 0 ? "red" : "green")">$@Html.DisplayFor(_ => Model.ProfitLoss)</td>
+    <td style="color: @(totalPercentage < 0 ? "red" : "green");">@totalPercentage.ToString("0.00")%</td>
+</tr>
+<tr>
+    <td colspan="7">
+        <div id="holding-@Model.Asset.Id" class="collapse">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Transaction Date</th>
+                        <th>Transaction</th>
+                        <th>Quantity (Oz)</th>
+                        <th>Price (USD)</th>
+                        <th>Value (USD)</th>
+                        <th>P/L (USD)</th>
+                        <th>Actions</th>
+                        <th class="text-end">
+                            <a asp-controller="AssetHolding" asp-action="Create" asp-route-assetId="@Model.Asset.Id" asp-route-returnController="CryptoAssets" asp-route-returnAction="Index" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Add</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var asset in Model.AssetHoldings)
+                    {
+                        <tr>
+                            <td>@asset.TransactionDate</td>
+                            <td style="color: @(asset.TransactionType == TransactionType.Purchase ? "green" : "red")">@asset.TransactionType</td>
+                            <td>@asset.Quantity</td>
+                            <td>$@Html.DisplayFor(_ => asset.Price)</td>
+                            <td>$@Html.DisplayFor(_ => asset.QuantityTimesCurrentPrice)</td>
+                            <td>$@Html.DisplayFor(_ => asset.ProfitLoss)</td>
+                            <td>
+                                <a asp-controller="AssetHolding" asp-action="Edit" asp-route-id="@asset.Id" asp-route-returnController="CryptoAssets" asp-route-returnAction="Index" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
+                                <a asp-controller="AssetHolding" asp-action="Delete" asp-route-id="@asset.Id" asp-route-returnController="CryptoAssets" asp-route-returnAction="Index" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <canvas id="cumulativeContributionsChart-@Model.Asset.Id" data-asset-holdings='@Json.Serialize((IEnumerable<object>)ViewData["simpleAssetHoldings"])'></canvas>
+        </div>
+    </td>
+</tr>
+
+<style>
+    .clickable-row td div {
+        display: flex;
+        align-items: center;
+    }
+
+    .clickable-row .chevron-icon {
+        margin-right: 10px;
+        transition: transform 0.3s;
+    }
+
+    .clickable-row[data-expanded="true"] .chevron-icon {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function (event) {
+                if (!event.target.closest('.not-clickable')) {
+                    const targetId = this.dataset.bsTarget;
+                    const targetElement = document.querySelector(targetId);
+                    const isExpanded = this.dataset.expanded === 'true';
+                    this.dataset.expanded = !isExpanded;
+                    targetElement.classList.toggle('collapse');
+
+                    const chevron = this.querySelector('.chevron-icon');
+                    chevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            });
+        });
+
+        const addButton = document.querySelectorAll('.not-clickable a');
+        addButton.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+        });
+    });
+</script>
+<script>
+    function toggleRow(row) {
+        const isExpanded = row.getAttribute('data-expanded') === 'true';
+        row.setAttribute('data-expanded', !isExpanded);
+    }
+</script>

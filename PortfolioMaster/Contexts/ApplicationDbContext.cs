@@ -25,6 +25,7 @@ namespace PortfolioMaster.Contexts
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<VentureCapital> VentureCapitalAssets { get; set; }
         public DbSet<CryptoAsset> CryptoAssets { get; set; }
+        public DbSet<CryptoAssetPrice> CryptoAssetPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

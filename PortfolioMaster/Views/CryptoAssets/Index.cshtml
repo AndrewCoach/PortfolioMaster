@@ -1,29 +1,29 @@
 ﻿@using PortfolioMaster.Models.ViewModels;
-@model PreciousMetalsViewModel
+@model CryptoAssetsViewModel
 @{
-    ViewData["Title"] = "Precious Metals";
+    ViewData["Title"] = "Crypto Assets";
     var editButtonStyle = "btn btn-sm btn-primary";
     var deleteButtonStyle = "btn btn-sm btn-danger";
-    decimal goldPrice = ViewBag.GoldPrice;
-    decimal silverPrice = ViewBag.SilverPrice;
+    decimal bitcoinPrice = ViewBag.BitcoinPrice;
+    decimal ethereumPrice = ViewBag.EthereumPrice;
 
-    decimal totalQuantity = Model.PreciousMetalsHoldings.Sum(group => group.Sum(h => h.AssetHoldings.Where(hh => hh.TransactionType == TransactionType.Purchase).Sum(hh => hh.Quantity) - h.AssetHoldings.Where(hh => hh.TransactionType == TransactionType.Sale).Sum(hh => hh.Quantity)));
-    decimal totalPurchasePrice = Model.PreciousMetalsHoldings.Sum(group => group.Sum(h => h.AssetHoldings.Sum(hh => hh.TransactionType == TransactionType.Purchase ? hh.Price : -hh.Price)));
-    decimal totalValue = Model.PreciousMetalsHoldings.Sum(group => group.Sum(h => h.TotalValue));
+    decimal totalQuantity = Model.CryptoAssetsHoldings.Sum(group => group.Sum(h => h.AssetHoldings.Where(hh => hh.TransactionType == TransactionType.Purchase).Sum(hh => hh.Quantity) - h.AssetHoldings.Where(hh => hh.TransactionType == TransactionType.Sale).Sum(hh => hh.Quantity)));
+    decimal totalPurchasePrice = Model.CryptoAssetsHoldings.Sum(group => group.Sum(h => h.AssetHoldings.Sum(hh => hh.TransactionType == TransactionType.Purchase ? hh.Price : -hh.Price)));
+    decimal totalValue = Model.CryptoAssetsHoldings.Sum(group => group.Sum(h => h.TotalValue));
     decimal totalPL = totalValue - totalPurchasePrice;
     decimal totalPercentage = totalPurchasePrice != 0 ? (totalPL / totalPurchasePrice) * 100 : 0;
 }
 
-<h1>@ViewData["Precious metals"]</h1>
+<h1>@ViewData["Crypto Assets"]</h1>
 
 <div class="container">
     <table class="table">
         <thead>
             <tr>
-                <th>Metal</th>
-                <th>Total Quantity (Oz)</th>
+                <th>Asset Name</th>
+                <th>Total Quantity</th>
                 <th>Total Cashflow (USD)</th>
-                <th>Current Price per Oz (USD)</th>
+                <th>Current Price per Unit (USD)</th>
                 <th>Total Value (USD)</th>
                 <th style="color: @(totalPL < 0 ? "red" : "green")">P/L (USD)</th>
                 <th style="color: @(totalPL < 0 ? "red" : "green")">P/L (%)</th>
@@ -31,18 +31,18 @@
         </thead>
         <tbody>
             @{
-                var simpleAssetHoldingsList = Model.PreciousMetalsHoldings.SelectMany(holdingList => holdingList.Select(item => item.AssetHoldings.Select(h => new
+                var simpleAssetHoldingsList = Model.CryptoAssetsHoldings.SelectMany(holdingList => holdingList.Select(item => item.AssetHoldings.Select(h => new
                 {
                     transactionDate = h.TransactionDate,
                     transactionType = h.TransactionType,
                     price = h.Price
                 }).ToList()));
             }
-            @foreach (var holdingList in Model.PreciousMetalsHoldings)
+            @foreach (var holdingList in Model.CryptoAssetsHoldings)
             {
-                @foreach (var goldHolding in holdingList)
+                @foreach (var cryptoHolding in holdingList)
                 {
-                    @await Html.PartialAsync("_PreciousMetalTable", goldHolding)
+                    @await Html.PartialAsync("_CryptoAssetTable", cryptoHolding)
                 }
             }
         </tbody>
@@ -64,10 +64,10 @@
     <!-- Add the footnote with gold and silver prices -->
     <div>
         <p>
-            <strong>Gold Price per Oz:</strong> $@Html.DisplayFor(_ => goldPrice)
+            <strong>Bitcoin Price per Unit:</strong> $@Html.DisplayFor(_ => bitcoinPrice)
         </p>
         <p>
-            <strong>Silver Price per Oz:</strong> $@Html.DisplayFor(_ => silverPrice)
+            <strong>Ethereum Price per Unit:</strong> $@Html.DisplayFor(_ => ethereumPrice)
         </p>
     </div>
 </div>
@@ -155,7 +155,7 @@
 
         @{
             int index = 0;
-            foreach (var holdingList in Model.PreciousMetalsHoldings)
+            foreach (var holdingList in Model.CryptoAssetsHoldings)
             {
                 foreach (var item in holdingList)
                 {

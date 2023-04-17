@@ -54,6 +54,7 @@ builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 
 builder.Services.AddScoped<PreciousMetalsService>();
+builder.Services.AddScoped<CryptoAssetsService>();
 builder.Services.AddScoped<AssetHoldingService>();
 builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<AssetService>();
