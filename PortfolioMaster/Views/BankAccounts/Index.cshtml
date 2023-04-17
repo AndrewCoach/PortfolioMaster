@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PortfolioMaster.Models.ViewModels.BankAccountViewModel>
 @{
     ViewData["Title"] = "Bank Accounts";
-    var sumInterestRates = Model.Sum(m => m.InterestRate);
+    var avgInterestRates = Model.Average(m => m.InterestRate);
     var sumContributed = Model.Sum(m => m.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Price : -h.Price));
     var sumValueToDate = Model.Sum(m => m.TotalValue);
     var sumCollectedInterests = Model.Sum(m => m.TotalValue - m.AssetHoldings.Sum(h => h.TransactionType == TransactionType.Purchase ? h.Price : -h.Price));
@@ -36,7 +36,7 @@
         }
         <tr>
             <td><strong>Total</strong></td>
-            <td>@Html.DisplayFor(_ => sumInterestRates) %</td>
+            <td>@Html.DisplayFor(_ => avgInterestRates) %</td>
             <td>$@Html.DisplayFor(_ => sumContributed)</td>
             <td>$@Html.DisplayFor(_ => sumValueToDate)</td>
             <td>$@Html.DisplayFor(_ => sumCollectedInterests)</td>
@@ -85,7 +85,7 @@
             }
             <tr>
                 <td><strong>Total</strong></td>
-                <td>@Html.DisplayFor(_ => sumInterestRates) %</td>
+                <td>@Html.DisplayFor(_ => avgInterestRates) %</td>
                 <td>$@Html.DisplayFor(_ => sumValueToDate)</td>
                 <td></td>
             </tr>

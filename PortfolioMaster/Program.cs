@@ -106,6 +106,7 @@ var app = builder.Build();
 
 app.UseHangfireDashboard();
 RecurringJob.AddOrUpdate<PreciousMetalsPriceUpdater>(updater => updater.UpdatePrices(), Cron.Daily);
+RecurringJob.AddOrUpdate<CryptocurrencyPriceUpdater>(updater => updater.UpdatePrices(), Cron.Minutely());
 
 
 // Configure the HTTP request pipeline.

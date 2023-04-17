@@ -96,7 +96,8 @@ namespace PortfolioMaster.Services
                 cryptoPrice = new CryptoAssetPrice
                 {
                     CryptoAssetType = cryptoType,
-                    Price = price
+                    Price = price,
+                    Date= DateTime.UtcNow,
                 };
                 _context.CryptoAssetPrices.Add(cryptoPrice);
             }
