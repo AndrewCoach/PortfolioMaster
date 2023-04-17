@@ -14,7 +14,7 @@
     decimal totalPercentage = totalPurchasePrice != 0 ? (totalPL / totalPurchasePrice) * 100 : 0;
 }
 
-<h1>@ViewData["Crypto Assets"]</h1>
+<h1>@ViewData["Title"]</h1>
 
 <div class="container">
     <table class="table">
@@ -61,7 +61,7 @@
         </tfoot>
     </table>
 
-    <!-- Add the footnote with gold and silver prices -->
+    <!-- Add the footnote with crypto prices -->
     <div>
         <p>
             <strong>Bitcoin Price per Unit:</strong> $@Html.DisplayFor(_ => bitcoinPrice)

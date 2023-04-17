@@ -38,7 +38,7 @@ namespace PortfolioMaster.Models.ViewModels
 
         [Required]
         [Range(0.000001, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
-        [Display(Name = "Price (USD)")]
+        [Display(Name = "Total Price (USD)")]
         public decimal Price { get; set; }
 
         public SelectList? PortfolioList { get; set; }

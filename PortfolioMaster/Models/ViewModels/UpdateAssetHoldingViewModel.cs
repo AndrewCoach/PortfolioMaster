@@ -17,12 +17,12 @@ namespace PortfolioMaster.Models.ViewModels
         public TransactionType TransactionType { get; set; }
 
         [Required(ErrorMessage = "Quantity is required.")]
-        [Display(Name = "Quantity (Oz)")]
+        [Display(Name = "Quantity")]
         [Range(0.000001, double.MaxValue, ErrorMessage = "Quantity must be greater than 0.")]
         public decimal Quantity { get; set; }
 
         [Required(ErrorMessage = "Price is required.")]
-        [Display(Name = "Price (USD)")]
+        [Display(Name = "Total Price (USD)")]
         [Range(0.000001, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal Price { get; set; }
     }
