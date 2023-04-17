@@ -24,6 +24,7 @@ namespace PortfolioMaster.Contexts
         public DbSet<PreciousMetalPrice> PreciousMetalPrices { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<VentureCapital> VentureCapitalAssets { get; set; }
+        public DbSet<CryptoAsset> CryptoAssets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +37,8 @@ namespace PortfolioMaster.Contexts
             modelBuilder.ApplyConfiguration(new PreciousMetalPriceConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
             modelBuilder.ApplyConfiguration(new VentureCapitalConfiguration());
+            modelBuilder.ApplyConfiguration(new CryptoAssetsConfiguration());
+            modelBuilder.ApplyConfiguration(new CryptoAssetPriceConfiguration());
 
             base.OnModelCreating(modelBuilder);
 
@@ -46,6 +49,14 @@ namespace PortfolioMaster.Contexts
             modelBuilder.Entity<PreciousMetal>()
                 .Property(p => p.MetalType)
                 .HasConversion(new EnumToStringConverter<MetalType>());
+
+            modelBuilder.Entity<CryptoAssetPrice>()
+                .Property(p => p.CryptoAssetType)
+                .HasConversion(new EnumToStringConverter<CryptoAssetType>());
+
+            modelBuilder.Entity<CryptoAsset>()
+                .Property(p => p.CryptoAssetType)
+                .HasConversion(new EnumToStringConverter<CryptoAssetType>());
         }
     }
 }
