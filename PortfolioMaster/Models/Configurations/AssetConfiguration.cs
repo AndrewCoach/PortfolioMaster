@@ -9,6 +9,7 @@ namespace PortfolioMaster.Models.Configuration
         public void Configure(EntityTypeBuilder<Asset> builder)
         {
             builder.Property(ah => ah.InterestRate).HasColumnType("decimal(18, 4)");
+            builder.Property(p => p.TotalValue).HasColumnType("decimal(18, 10)");
         }
     }
 }

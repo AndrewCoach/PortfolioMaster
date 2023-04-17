@@ -8,7 +8,6 @@ namespace PortfolioMaster.Models.Configuration
     {
         public void Configure(EntityTypeBuilder<BankAccount> builder)
         {
-            builder.Property(p => p.TotalValue).HasColumnType("decimal(18, 10)");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PortfolioMaster.Models
@@ -9,6 +10,9 @@ namespace PortfolioMaster.Models
         public string Name { get; set; }
 
         public decimal InterestRate { get; set; }
+
+        [Display(Name = "Total Value (USD)")]
+        public decimal TotalValue { get; set; }
 
         public string UserId { get; set; }
         // Add this User navigation property
