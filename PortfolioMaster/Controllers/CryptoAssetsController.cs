@@ -46,6 +46,9 @@ namespace PortfolioMaster.Controllers
             ViewBag.BitcoinPrice = bitcoinPrice;
             ViewBag.EthereumPrice = etherPrice;
 
+            var cryptoPriceHistories = await _cryptoAssetsService.GetCryptoPriceHistoriesAsync();
+            ViewBag.CryptoPriceHistories = cryptoPriceHistories;
+
             var cryptoHoldingsVm = cryptoHoldings.Select(cryptoHoldings => cryptoHoldings.Select(m => {
                 var metalPrice = m.CryptoAssetType == CryptoAssetType.Bitcoin ? bitcoinPrice : etherPrice;
 

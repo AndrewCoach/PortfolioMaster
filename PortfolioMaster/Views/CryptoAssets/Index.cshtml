@@ -71,7 +71,9 @@
         </p>
     </div>
 </div>
-
+</br>
+<h2>30 Day Action Graphs</h2>
+@await Html.PartialAsync("_CryptoAssetGraphs", (Dictionary<CryptoAssetType, List<CryptoPriceHistory>>)ViewBag.CryptoPriceHistories)
 
 @section Scripts {
     <script>
@@ -153,8 +155,12 @@
             });
         }
 
+        // Assigning Razor-generated values to JavaScript variables
         @{
             int index = 0;
+            List<string> chartElementIds = new List<string>();
+            List<string> assetHoldingsDataList = new List<string>();
+
             foreach (var holdingList in Model.CryptoAssetsHoldings)
             {
                 foreach (var item in holdingList)
@@ -162,14 +168,76 @@
                     var chartElementId = $"cumulativeContributionsChart-{item.Asset.Id}";
                     var assetHoldingsData = Json.Serialize(simpleAssetHoldingsList.ElementAt(index));
 
-                    <text>
-                        generateCumulativeContributionsChart('@chartElementId', @assetHoldingsData);
-                    </text>
+                    chartElementIds.Add(chartElementId);
+                    assetHoldingsDataList.Add(assetHoldingsData.ToString());
 
                     index++;
                 }
             }
+
+            var bitcoinPriceHistory = Json.Serialize(ViewBag.CryptoPriceHistories[CryptoAssetType.Bitcoin]);
+            var ethereumPriceHistory = Json.Serialize(ViewBag.CryptoPriceHistories[CryptoAssetType.Ethereum]);
+            var chartElementIdsJson = Json.Serialize(chartElementIds);
+            var assetHoldingsDataListJson = Json.Serialize(assetHoldingsDataList);
         }
+
+            function generateCryptoPriceChart(elementId, priceHistory) {
+                var labels = priceHistory.map(item => item.date);
+                var data = priceHistory.map(item => item.price);
+
+                var ctx = document.getElementById(elementId).getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Price (USD)',
+                            data: data,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                            pointBorderColor: 'rgba(75, 192, 192, 1)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Price (USD)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+        // The event listener to handle the chart generation
+        document.addEventListener('DOMContentLoaded', function () {
+            var chartElementIds = @chartElementIdsJson;
+            var assetHoldingsDataList = @assetHoldingsDataListJson;
+
+            for (var i = 0; i < chartElementIds.length; i++) {
+                generateCumulativeContributionsChart(chartElementIds[i], JSON.parse(assetHoldingsDataList[i]));
+            }
+
+            var bitcoinPriceHistory = @bitcoinPriceHistory;
+            var ethereumPriceHistory = @ethereumPriceHistory;
+
+            generateCryptoPriceChart('cryptoPriceChart-0', bitcoinPriceHistory); // Use 0 for Bitcoin
+            generateCryptoPriceChart('cryptoPriceChart-1', ethereumPriceHistory); // Use 1 for Ethereum
+        });
+
     </script>
 }
+
 

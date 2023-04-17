@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Flurl.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json.Linq;
 using PortfolioMaster.Contexts;
 using PortfolioMaster.Models;
+using PortfolioMaster.Models.ViewModels;
 
 namespace PortfolioMaster.Services
 {
@@ -43,7 +46,45 @@ namespace PortfolioMaster.Services
             return groupedHoldings;
         }
 
-        public async Task<List<CryptoAsset>> GetUserBitcoinHoldingsAsync(string userId)
+        public async Task<Dictionary<CryptoAssetType, List<CryptoPriceHistory>>> GetCryptoPriceHistoriesAsync()
+        {
+            // Fetch price history data for each crypto asset type and store it in a dictionary
+            Dictionary<CryptoAssetType, List<CryptoPriceHistory>> cryptoPriceHistories = new Dictionary<CryptoAssetType, List<CryptoPriceHistory>>();
+
+            foreach (CryptoAssetType assetType in Enum.GetValues(typeof(CryptoAssetType)))
+            {
+                cryptoPriceHistories[assetType] = await GetCryptoPriceHistoryAsync(assetType);
+            }
+
+            return cryptoPriceHistories;
+        }
+
+    public async Task<List<CryptoPriceHistory>> GetCryptoPriceHistoryAsync(CryptoAssetType assetType)
+        {
+            string apiUrl = "https://api.coingecko.com/api/v3/coins/";
+            string coinId = assetType == CryptoAssetType.Bitcoin ? "bitcoin" : "ethereum";
+            string days = "30"; // Fetch data for the last 30 days
+            string vsCurrency = "usd";
+
+            var url = $"{apiUrl}{coinId}/market_chart?vs_currency={vsCurrency}&days={days}&interval=daily";
+            var response = await url.GetStringAsync();
+
+            var jsonResponse = JObject.Parse(response);
+            var prices = jsonResponse["prices"].ToObject<List<List<decimal>>>();
+            var priceHistory = new List<CryptoPriceHistory>();
+
+            foreach (var priceData in prices)
+            {
+                var date = DateTimeOffset.FromUnixTimeMilliseconds((long)priceData[0]).DateTime;
+                var price = priceData[1];
+
+                priceHistory.Add(new CryptoPriceHistory { Date = date, Price = price });
+            }
+
+            return priceHistory;
+        }
+
+    public async Task<List<CryptoAsset>> GetUserBitcoinHoldingsAsync(string userId)
         {
             return await _context.CryptoAssets
                 .Where(h => h.UserId == userId)

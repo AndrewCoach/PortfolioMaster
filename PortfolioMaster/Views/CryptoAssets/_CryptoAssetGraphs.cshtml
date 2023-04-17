@@ -1,0 +1,18 @@
+﻿@using PortfolioMaster.Models.ViewModels;
+@model Dictionary<CryptoAssetType, List<CryptoPriceHistory>>
+
+<div class="row">
+    @foreach (var assetType in Model.Keys)
+    {
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@assetType.ToString()</h5>
+                    <canvas id="@($"cryptoPriceChart-{(int)assetType}")"></canvas>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
