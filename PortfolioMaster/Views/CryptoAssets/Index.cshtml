@@ -182,7 +182,12 @@
         }
 
             function generateCryptoPriceChart(elementId, priceHistory) {
-                var labels = priceHistory.map(item => item.date);
+                var labels = priceHistory.map(item => {
+                    var date = new Date(item.date);
+                    // Format the date string without time information
+                    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                });
+
                 var data = priceHistory.map(item => item.price);
 
                 var ctx = document.getElementById(elementId).getContext('2d');
@@ -220,6 +225,7 @@
                     }
                 });
             }
+
 
         // The event listener to handle the chart generation
         document.addEventListener('DOMContentLoaded', function () {
