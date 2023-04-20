@@ -27,6 +27,8 @@ namespace PortfolioMaster.Contexts
         public DbSet<CryptoAsset> CryptoAssets { get; set; }
         public DbSet<CryptoAssetPrice> CryptoAssetPrices { get; set; }
 
+        public DbSet<StockPriceHistory> StockPriceHistories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new PreciousMetalsConfiguration());
@@ -40,6 +42,7 @@ namespace PortfolioMaster.Contexts
             modelBuilder.ApplyConfiguration(new VentureCapitalConfiguration());
             modelBuilder.ApplyConfiguration(new CryptoAssetsConfiguration());
             modelBuilder.ApplyConfiguration(new CryptoAssetPriceConfiguration());
+            modelBuilder.ApplyConfiguration(new StockPriceHistoryConfiguration());
 
             base.OnModelCreating(modelBuilder);
 

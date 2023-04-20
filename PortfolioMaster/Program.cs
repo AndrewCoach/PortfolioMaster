@@ -13,6 +13,8 @@ using Hangfire.SqlServer;
 using PortfolioMaster.Contexts;
 using System.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,8 +107,10 @@ builder.Services.AddHangfireServer();
 var app = builder.Build();
 
 app.UseHangfireDashboard();
+
 RecurringJob.AddOrUpdate<PreciousMetalsPriceUpdater>(updater => updater.UpdatePrices(), Cron.Daily);
 RecurringJob.AddOrUpdate<CryptocurrencyPriceUpdater>(updater => updater.UpdatePrices(), Cron.Minutely());
+RecurringJob.AddOrUpdate<StockDataUpdater>(stockDataUpdater => stockDataUpdater.UpdateStockDataAsync(), Cron.Daily);
 
 
 // Configure the HTTP request pipeline.
